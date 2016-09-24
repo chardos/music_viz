@@ -1,0 +1,65 @@
+body {
+  background-color: #000000;
+  margin: 0px;
+  font-size: 12px;
+  overflow: hidden;
+  font-family: helvetica, arial, sans-serif;
+  color: white;
+}
+
+#bottomBar{
+  text-align: center;
+  opacity: 0.3;
+  position: absolute;
+  background-color: rgba(0,0,0,0.8);
+  bottom: 0px;
+  width: 100%;
+  height: 35px;
+  transition: opacity 2s;
+}
+#bottomBar:hover{
+  opacity: 1;
+  transition: opacity 0.2s;
+}
+audio{
+  width: 100%;
+  max-width: 800px;
+}
+#fullscreen{
+  float: left;
+}
+#textinput{
+  display: none;
+  float: left;
+  margin: 8px 8px 0 150px;
+}
+#gettrack{
+  display: none;
+  float: left;
+  margin: 8px 8px 0 0;
+}
+#pause{
+  display: none;
+  float: left;
+  margin: 8px;
+}
+#play{
+  display: none;
+  float: left;
+  margin: 8px 8px 0 0;
+}
+
+#value{
+  display: none;
+  position: absolute;
+  padding: 5px;
+  top: 10px;
+  left: 10px;
+  background-color: white;
+}
+#fps{
+  color: #777;
+  position: absolute;
+  bottom: 5px;
+  right: 5px;
+}

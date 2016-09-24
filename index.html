@@ -1,0 +1,45 @@
+<!DOCTYPE HTML>
+<html lang="en">
+	<head>
+		<title>Particle sphere</title>
+		<meta charset="utf-8">
+		<link rel="stylesheet" type="text/css" href="css/style.css">
+
+	</head>
+	<body>
+		<div id="bottomBar">
+			<audio src="audio/kill-paris-operate.mp3" autoplay preload="auto" id="player" controls></audio>
+			<input type="text" id="textinput">
+			<button id="gettrack">Submit</button>
+			<button id="pause">Pause</button>
+			<button id="play">Play</button>
+			<div id="fullscreen">full screen</div>
+			<div id="fps">fps</div>
+			<div id="value">Value</div>
+		</div>
+		<script src="http://connect.soundcloud.com/sdk.js"></script>
+		<script>
+			SC.initialize({
+		    client_id: "74a591aaa5e9a7723d674ccf5fffe0bc"
+		  });
+		</script>
+
+		<script src="js/lib/three.min.js"></script>
+		<script src="js/lib/TweenLite.min.js"></script>
+		<script src="js/helpers.js"></script>
+		<script src="js/audiohelpers.js"></script>
+		<script src="js/starburst/helpers.js"></script>
+		<script src="js/starburst/main.js"></script>
+		<script src="js/wave.js"></script>
+		<script src="js/init.js"></script>
+		<script>
+			// TODO : add microphone
+			// TODO : addtrackball instead of mousing
+			// TODO : change to request animation frame
+			// TODO : add FPS graph like :http://jabtunes.com/labs/particles/experiments_fbo.html
+			// TODO : add slider for particle size
+			// TODO : make particles round
+		</script>
+
+	</body>
+</html>
