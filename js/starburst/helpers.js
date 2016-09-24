@@ -1,3 +1,3 @@
-// export default function(){
-//   console.log('yo');
-// }
+export default function(){
+  console.log('yo');
+}
