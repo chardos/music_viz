@@ -1,4 +1,4 @@
-// import {spherize} from './helpers.js';
+import {spherize} from './helpers.js';
 
 export default (function(){
   let particles;
