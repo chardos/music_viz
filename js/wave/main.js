@@ -2,11 +2,7 @@ import {analyser, audioElement} from '../audio.js';
 let particles, frequencyData;
 
 export default (function(){
-  var V = V || {};
-
-  V.wave = {};
-
-  V.wave.config = {
+  let config = {
     particleBaseSize: 3,
     panMultiplier: 1400, //how much mouse affects pan
     height: 128,//128 // number of particles high
@@ -18,8 +14,7 @@ export default (function(){
     coolOffPeriod: 2500,
     bigBeatSensitivity: 3 //lower is more sensitive
   }
-
-  V.wave.vars={
+  let vars = {
     heightToFFTratio: null,
     sphereFloor: 0,
     sphereRange: 1,
@@ -32,32 +27,29 @@ export default (function(){
   }
 
   function init() {
-
-    var wCfg = V.wave.config;
-    var wVars = V.wave.vars;
     let particleGeom = new THREE.Geometry();
     var material;
     var colors = [];
-    camera.position.x = wCfg.baseCamX;
-    camera.position.y = wCfg.baseCamY;
-    camera.position.z = wCfg.baseCamZ;
+    camera.position.x = config.baseCamX;
+    camera.position.y = config.baseCamY;
+    camera.position.z = config.baseCamZ;
     let fftSize = analyser.fftSize;
 
     //set ratio
-    wVars.heightToFFTratio = fftSize / V.wave.config.height;
+    vars.heightToFFTratio = fftSize / config.height;
 
     //CREATE THE PARTICLE GRID
-    for (var i = 0; i < wCfg.width; i++){
-      for (var i2 = 0; i2 < wCfg.height; i2++){
+    for (var i = 0; i < config.width; i++){
+      for (var i2 = 0; i2 < config.height; i2++){
         //create sheet of particles
-        var x = i * wCfg.spacing;
-        var y = i2 * wCfg.spacing;
+        var x = i * config.spacing;
+        var y = i2 * config.spacing;
         var z = 0;
 
         particleGeom.vertices.push( new THREE.Vector3() );
-        var index = i*wCfg.height + i2;
+        var index = i*config.height + i2;
         particleGeom.vertices[index].x = x;
-        particleGeom.vertices[index].y = y - (wCfg.height * wCfg.spacing/2);
+        particleGeom.vertices[index].y = y - (config.height * config.spacing/2);
         particleGeom.vertices[index].z = z;
         particleGeom.vertices[index].baseZ = z;
 
@@ -72,7 +64,7 @@ export default (function(){
 
     // material
     material = new THREE.PointCloudMaterial({
-      size: wCfg.particleBaseSize,
+      size: config.particleBaseSize,
       vertexColors: THREE.VertexColors,
       sizeAttenuation: true
     });
@@ -82,58 +74,52 @@ export default (function(){
     scene.add( particles );
   }
 
-
-  V.wave.reset = function() {
-
-  }
   function updateFrame(analyser) {
 
-    var cfg = V.config;
-    var wCfg = V.wave.config;
-    var wVars = V.wave.vars;
 
     //AUDIO ------------------------------------
 
-    V.wave.getAudioData(wVars, wCfg, analyser);
-    var volumeDelta = wVars.currentVolume - wVars.lastVolume;
+    getAudioData(vars, config, analyser);
+    var volumeDelta = vars.currentVolume - vars.lastVolume;
 
-    if(volumeDelta > wCfg.bigBeatSensitivity * audioElement.volume){ //detect change in volume
-      if(wVars.cooledOff == true){
-        V.wave.changeView();
+    if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
+      if(vars.cooledOff == true){
+        changeView();
       }
     }
 
-    wVars.lastVolume = wVars.currentVolume;
+    vars.lastVolume = vars.currentVolume;
 
     //PARTICLES ------------------------------------
     particles.geometry.verticesNeedUpdate = true;
     particles.geometry.colorsNeedUpdate = true;
 
-    let currentColumn = V.wave.selectColumn(wVars.column);
-    wVars.column++;
-    if(wVars.column >= wCfg.width){
-      wVars.column = 0;
+    let currentColumn = selectColumn(vars.column);
+    vars.column++;
+    if(vars.column >= config.width){
+      vars.column = 0;
     }
 
-    V.wave.setWaveSlice(cfg, wVars, currentColumn);
-    V.wave.iterateParticles(wCfg, wVars);
-    // V.wave.stutterCamPosition(wCfg, wVars);
+    setWaveSlice(currentColumn);
+    iterateParticles(config, vars);
+    // stutterCamPosition(config, vars);
 
-    wVars.baseHue += 0.0003;
-    if(wVars.baseHue > 1){
-      wVars.baseHue = 0
+    vars.baseHue += 0.0003;
+    if(vars.baseHue > 1){
+      vars.baseHue = 0
     };
     camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
   }
 
 
-  V.wave.selectColumn = function(index) {
+  function selectColumn(index) {
     var column = {};
+    let height = config.height;
     column.particles = [];
     column.indices = [];
-    var startI = this.config.height*index;
-    var endI = this.config.height*index + this.config.height
+    var startI = height*index;
+    var endI = height*index + height
     for(var i=startI; i<endI; i++) {
       column.particles.push(particles.geometry.vertices[i]);
       column.indices.push(i);
@@ -141,27 +127,26 @@ export default (function(){
     return column;
   }
 
-  V.wave.iterateParticles = function(wCfg, wVars){
+  function iterateParticles(config, vars){
     // move particles to the left
     for(var i=0; i<particles.geometry.vertices.length; i++) {
       let particle = particles.geometry.vertices[i];
-      particle.x -= wCfg.spacing;
-      if(particle.x < wCfg.width * wCfg.spacing * -1){
-        particle.x = 0 - wCfg.spacing;
+      particle.x -= config.spacing;
+      if(particle.x < config.width * config.spacing * -1){
+        particle.x = 0 - config.spacing;
       }
-      //particle.z = particle.baseZ + wVars.currentVolume;
+      //particle.z = particle.baseZ + vars.currentVolume;
     }
-
   }
 
-  V.wave.setWaveSlice = function(cfg, wVars, currentColumn){
+  function setWaveSlice(currentColumn){
     //set z values + colors
     for(var i=0; i < currentColumn.particles.length; i++) {
       let particle = currentColumn.particles[i];
       let index = currentColumn.indices[i];
 
       //assign each particle to a FFT band
-      var fftBand = i%(analyser.fftSize/wVars.heightToFFTratio)
+      var fftBand = i%(analyser.fftSize/vars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
       // var amplitude = amplitude*amplitude / 200;
 
@@ -169,56 +154,54 @@ export default (function(){
       particle.baseZ = amplitude;
 
       //colorize the particle
-      wVars.colors[index] = new THREE.Color();
-      var modifiedHue = wVars.baseHue + (frequencyData[fftBand]/600)
-      wVars.colors[index].setHSL( modifiedHue, 1, amplitude/255 );
+      vars.colors[index] = new THREE.Color();
+      var modifiedHue = vars.baseHue + (frequencyData[fftBand]/600)
+      vars.colors[index].setHSL( modifiedHue, 1, amplitude/255 );
 
     }
-    particles.geometry.colors = wVars.colors;
+    particles.geometry.colors = vars.colors;
   }
 
-  V.wave.getAudioData = function(wVars, wCfg){
+  function getAudioData(vars, config){
     frequencyData = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(frequencyData);
 
-    wVars.currentVolume = 0;
+    vars.currentVolume = 0;
     for(var i=0; i<frequencyData.length; i++) {
-      wVars.currentVolume += frequencyData[i];
+      vars.currentVolume += frequencyData[i];
     }
-    wVars.currentVolume /= analyser.fftSize;
+    vars.currentVolume /= analyser.fftSize;
   }
 
-  V.wave.stutterCamPosition = function(wCfg, wVars){
-    // camera.position.x = wCfg.baseCamX + wVars.currentVolume* 2;
-    camera.position.y = wCfg.baseCamY + wVars.currentVolume* 3;
+  function stutterCamPosition(config, vars){
+    // camera.position.x = config.baseCamX + vars.currentVolume* 2;
+    camera.position.y = config.baseCamY + vars.currentVolume* 3;
   }
 
-  V.wave.changeView = function(){
-    var wCfg = V.wave.config;
-    var wVars = V.wave.vars;
+  function changeView(){
 
     var yMultiplier = Math.random() + 0.5;
     var zMultiplier = Math.random()* 0.7 + 0.5;
 
-    //camera.position.y = wCfg.baseCamY * yMultiplier;
-    //camera.position.z = wCfg.baseCamZ * zMultiplier;
+    //camera.position.y = config.baseCamY * yMultiplier;
+    //camera.position.z = config.baseCamZ * zMultiplier;
 
     TweenLite.to(camera.position, 0.35, {
-      z: wCfg.baseCamZ * zMultiplier,
+      z: config.baseCamZ * zMultiplier,
       ease:Power2.easeOut
     });
 
 
     //set cool off
-    wVars.cooledOff = false;
+    vars.cooledOff = false;
     setTimeout(function(){
-      wVars.cooledOff = true;
-    },wCfg.coolOffPeriod)
+      vars.cooledOff = true;
+    },config.coolOffPeriod)
 
-    wVars.cooledOffSmall = false;
+    vars.cooledOffSmall = false;
     setTimeout(function(){
-      wVars.cooledOffSmall = true;
-    },wCfg.coolOffPeriodSmall)
+      vars.cooledOffSmall = true;
+    },config.coolOffPeriodSmall)
   }
 
   return{
