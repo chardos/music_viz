@@ -5,7 +5,7 @@ import wave from './wave/main.js';
 window.V = V || {};
 
 V.config = {
-  viz: 1,
+  viz: 0,
   fps: 60,
   fftSize: 512
 }
@@ -26,9 +26,9 @@ window.mouseY = 0;
 
 V.init = function() {
   var cfg = V.config;
-  V.setup3dScene();
+  setup3dScene();
 
-  V.startViz();
+  startViz();
 
   // add the mouse move listener
   document.addEventListener( 'mousemove', updateMouseCoords, false );
@@ -42,14 +42,14 @@ V.init = function() {
   //   //reset scene
   //   element = document.querySelectorAll("canvas");
   //   element[0].parentNode.removeChild(element[0]);
-  //   V.setup3dScene();
+  //   setup3dScene();
   //
   //   //set viz
   //   cfg.viz++;
   //   if (cfg.viz >= V.vizArray.length){
   //     cfg.viz = 0;
   //   }
-  //   V.startViz();
+  //   startViz();
   // },3500)
 
 
@@ -67,13 +67,13 @@ function update() {
   calcFPS();
 }
 
-V.startViz = function(){
+function startViz(){
   //*******THIS CHANGES**********
   var currentViz = V.vizArray[V.config.viz];
   currentViz.init();
 }
 
-V.setup3dScene = function() {
+function setup3dScene() {
   // field of view, aspect ratio for render output, near and far clipping plane.
   camera = new THREE.PerspectiveCamera(80, windowWidth / window.innerHeight, 1, 4000 );
   camera.position.z = 200;

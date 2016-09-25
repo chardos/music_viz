@@ -3,9 +3,6 @@ import {analyser} from '../audio.js';
 
 export default (function(){
   let particles;
-  var V = V || {};
-
-  V.starburst = {};
 
   let config = {
     panMultiplier: 300, //how much mouse affects pan
@@ -13,7 +10,7 @@ export default (function(){
     baseZoom: 200
   }
 
-  V.starburst.vars={
+  let vars ={
     particleBaseSize: 0.7,
     sphereFloor: 0,
     sphereRange: 1,
@@ -22,17 +19,15 @@ export default (function(){
     particleGeom: null
   }
 
-  V.starburst.reset = function() {
-    V.starburst.vars.particleGeom.dispose();
+  function reset() {
+    vars.particleGeom.dispose();
   }
 
   //the init function called from the main.js
   function init() {
 
-    var sVars = V.starburst.vars;
-
-    sVars.particleGeom = new THREE.Geometry()
-    var particleGeom = sVars.particleGeom;
+    vars.particleGeom = new THREE.Geometry()
+    var particleGeom = vars.particleGeom;
     var material;
     window.colors = [];
 
@@ -58,7 +53,7 @@ export default (function(){
     particleGeom.colors = colors;
     // material
     material = new THREE.PointCloudMaterial({
-        size: sVars.particleBaseSize,
+        size: vars.particleBaseSize,
         vertexColors: THREE.VertexColors
     });
 
@@ -66,15 +61,13 @@ export default (function(){
     scene.add( particles );
 
     let changeViewInt = setInterval(function(){
-      V.starburst.changeView();
+      changeView();
     },1500)
 
   }
 
 
   function updateFrame() {
-    var cfg = V.config;
-    var sVars = V.starburst.vars;
 
     //AUDIO ------------------------------------
 
@@ -107,14 +100,14 @@ export default (function(){
       //make particles with 0 amplitude bounce to averagevolume
       if (amplitude == 0) amplitude = averageVolume;
 
-      particle.x = particle.origX * amplitude * sVars.sphereRange + particle.origX*sVars.sphereFloor;
-      particle.y = particle.origY * amplitude * sVars.sphereRange + particle.origY*sVars.sphereFloor;
-      particle.z = particle.origZ * amplitude * sVars.sphereRange + particle.origZ*sVars.sphereFloor;
+      particle.x = particle.origX * amplitude * vars.sphereRange + particle.origX*vars.sphereFloor;
+      particle.y = particle.origY * amplitude * vars.sphereRange + particle.origY*vars.sphereFloor;
+      particle.z = particle.origZ * amplitude * vars.sphereRange + particle.origZ*vars.sphereFloor;
 
 
       //colorize the particle
       colors[i] = new THREE.Color();
-      var modifiedHue = sVars.baseHue + (frequencyData[fftBand]/250)
+      var modifiedHue = vars.baseHue + (frequencyData[fftBand]/250)
       colors[i].setHSL( modifiedHue, 1, .6 );
 
       //if no volume, blacken all particles.
@@ -123,8 +116,8 @@ export default (function(){
       }
 
     }
-    sVars.baseHue += + 0.005;
-    if (sVars.baseHue > 1) sVars.baseHue = 0;
+    vars.baseHue += + 0.005;
+    if (vars.baseHue > 1) vars.baseHue = 0;
     geometry.colors = colors;
 
     //move cam up down out on mouseY
@@ -139,48 +132,46 @@ export default (function(){
   }
 
 
-  V.starburst.changeView = function(){
-    var cfg = V.config;
-    var sVars = V.starburst.vars;
+  function changeView(){
 
-    if(sVars.view == 0){
+    if(vars.view == 0){
       console.log(0);
-      sVars.sphereFloor = 100;
-      sVars.sphereRange = 0.6;
+      vars.sphereFloor = 100;
+      vars.sphereRange = 0.6;
       setTimeout(function(){
         config.baseZoom = 300;
       },700)
     }
-    if(sVars.view == 1){
+    if(vars.view == 1){
       console.log(1);
       config.baseZoom = 175;
       setTimeout(function(){
-        particles.material.size = sVars.particleBaseSize * 2;
+        particles.material.size = vars.particleBaseSize * 2;
       },700)
       setTimeout(function(){
-        particles.material.size = sVars.particleBaseSize = 0.7;
+        particles.material.size = vars.particleBaseSize = 0.7;
       },1200)
     }
-    if(sVars.view == 2){
+    if(vars.view == 2){
       console.log(2);
-      sVars.sphereFloor = 0;
-      sVars.sphereRange = 1;
+      vars.sphereFloor = 0;
+      vars.sphereRange = 1;
       setTimeout(function(){
         config.baseZoom = 100;
       },700)
       setTimeout(function(){
         config.baseZoom = 300;
-        V.starburst.vars.sphereFloor=120;
-      V.starburst.vars.sphereRange=.05;
+        vars.sphereFloor=120;
+      vars.sphereRange=.05;
       },1200)
     }
-    if(sVars.view == 3){
+    if(vars.view == 3){
       console.log(3);
-      sVars.sphereFloor = 50;
-      sVars.sphereRange = 1;
+      vars.sphereFloor = 50;
+      vars.sphereRange = 1;
       config.baseZoom = 200;
       setTimeout(function(){
-        sVars.sphereFloor = 80;
+        vars.sphereFloor = 80;
         config.baseZoom = 500;
       },300)
       setTimeout(function(){
@@ -190,19 +181,19 @@ export default (function(){
         config.baseZoom = 200;
       },1200)
     }
-    if(sVars.view == 4){
+    if(vars.view == 4){
       console.log(4);
-      V.starburst.vars.sphereFloor=120;
-      V.starburst.vars.sphereRange=.05;
+      vars.sphereFloor=120;
+      vars.sphereRange=.05;
       setTimeout(function(){
         config.baseZoom = 160;
       },1300)
     }
 
 
-    sVars.view++;
-    if(sVars.view > 4){
-      sVars.view = 0;
+    vars.view++;
+    if(vars.view > 4){
+      vars.view = 0;
     }
   }
   return{
