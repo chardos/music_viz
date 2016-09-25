@@ -5,7 +5,7 @@ import wave from './wave/main.js';
 window.V = V || {};
 
 V.config = {
-  viz: 1,
+  viz: 0,
   fps: 60,
   fftSize: 512
 }
@@ -63,14 +63,14 @@ function update() {
   renderer.render( scene, camera ); // and render the scene from the perspective of the camera
   //*******THIS CHANGES**********
   var currentViz = V.vizArray[V.config.viz];
-  currentViz.updateFrame(analyser);
+  currentViz.updateFrame();
   calcFPS();
 }
 
 V.startViz = function(){
   //*******THIS CHANGES**********
   var currentViz = V.vizArray[V.config.viz];
-  currentViz.init(analyser);
+  currentViz.init();
 }
 
 V.setup3dScene = function() {
@@ -97,14 +97,6 @@ V.setup3dScene = function() {
 // AUDIO STARTS HERE
 // --------------------------------------------------------------------------
 
-const context = new AudioContext();
-const audioElement = document.getElementById("player");
-const analyser = context.createAnalyser();
-analyser.fftSize = V.config.fftSize;
-
-var source = context.createMediaElementSource(audioElement);
-source.connect(analyser);
-source.connect(context.destination);
 
 
 V.init();

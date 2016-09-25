@@ -1,4 +1,5 @@
 import {spherize} from './helpers.js';
+import {analyser} from '../audio.js';
 
 export default (function(){
   let particles;
@@ -71,7 +72,7 @@ export default (function(){
   }
 
 
-  function updateFrame(analyser) {
+  function updateFrame() {
     var cfg = V.config;
     var sVars = V.starburst.vars;
 
