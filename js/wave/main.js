@@ -1,6 +1,5 @@
-
-//TODO: alternate between the 2 (wave and sphere)
-//TODO: add microphone
+import {analyser, audioElement} from '../audio.js';
+let particles, frequencyData;
 
 export default (function(){
   var V = V || {};
@@ -32,7 +31,7 @@ export default (function(){
     cooledOff: true,
   }
 
-  function init(analyser) {
+  function init() {
 
     var wCfg = V.wave.config;
     var wVars = V.wave.vars;
@@ -78,7 +77,7 @@ export default (function(){
       sizeAttenuation: true
     });
 
-    let particles = new THREE.PointCloud(particleGeom, material);
+    particles = new THREE.PointCloud(particleGeom, material);
 
     scene.add( particles );
   }
@@ -110,13 +109,13 @@ export default (function(){
     particles.geometry.verticesNeedUpdate = true;
     particles.geometry.colorsNeedUpdate = true;
 
-    currentColumn = V.wave.selectColumn(wVars.column);
+    let currentColumn = V.wave.selectColumn(wVars.column);
     wVars.column++;
     if(wVars.column >= wCfg.width){
       wVars.column = 0;
     }
 
-    V.wave.setWaveSlice(cfg, wVars);
+    V.wave.setWaveSlice(cfg, wVars, currentColumn);
     V.wave.iterateParticles(wCfg, wVars);
     V.wave.stutterCamPosition(wCfg, wVars);
 
@@ -145,7 +144,7 @@ export default (function(){
   V.wave.iterateParticles = function(wCfg, wVars){
     // move particles to the left
     for(var i=0; i<particles.geometry.vertices.length; i++) {
-      particle = particles.geometry.vertices[i];
+      let particle = particles.geometry.vertices[i];
       particle.x -= wCfg.spacing;
       if(particle.x < wCfg.width * wCfg.spacing * -1){
         particle.x = 0 - wCfg.spacing;
@@ -155,14 +154,14 @@ export default (function(){
 
   }
 
-  V.wave.setWaveSlice = function(cfg, wVars){
+  V.wave.setWaveSlice = function(cfg, wVars, currentColumn){
     //set z values + colors
     for(var i=0; i < currentColumn.particles.length; i++) {
-      particle = currentColumn.particles[i];
-      index = currentColumn.indices[i];
+      let particle = currentColumn.particles[i];
+      let index = currentColumn.indices[i];
 
       //assign each particle to a FFT band
-      var fftBand = i%(fftSize/wVars.heightToFFTratio)
+      var fftBand = i%(analyser.fftSize/wVars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
 
       particle.z = amplitude;
@@ -177,8 +176,8 @@ export default (function(){
     particles.geometry.colors = wVars.colors;
   }
 
-  V.wave.getAudioData = function(wVars, wCfg, analyser){
-    let frequencyData = new Uint8Array(analyser.frequencyBinCount);
+  V.wave.getAudioData = function(wVars, wCfg){
+    frequencyData = new Uint8Array(analyser.frequencyBinCount);
     analyser.getByteFrequencyData(frequencyData);
 
     wVars.currentVolume = 0;
