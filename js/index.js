@@ -1,16 +1,16 @@
 import starburst from './starburst/main.js';
-// console.log(starburst);
+import wave from './wave/main.js';
 
 //config
 window.V = V || {};
 
 V.config = {
-  viz: 0,
+  viz: 1,
   fps: 60,
   fftSize: 512
 }
 
-V.vizArray = [starburst, 'wave']
+V.vizArray = [starburst, wave]
 
 window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
@@ -70,7 +70,7 @@ function update() {
 V.startViz = function(){
   //*******THIS CHANGES**********
   var currentViz = V.vizArray[V.config.viz];
-  currentViz.init();
+  currentViz.init(analyser);
 }
 
 V.setup3dScene = function() {
