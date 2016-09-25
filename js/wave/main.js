@@ -117,7 +117,7 @@ export default (function(){
 
     V.wave.setWaveSlice(cfg, wVars, currentColumn);
     V.wave.iterateParticles(wCfg, wVars);
-    V.wave.stutterCamPosition(wCfg, wVars);
+    // V.wave.stutterCamPosition(wCfg, wVars);
 
     wVars.baseHue += 0.0003;
     if(wVars.baseHue > 1){
@@ -163,6 +163,7 @@ export default (function(){
       //assign each particle to a FFT band
       var fftBand = i%(analyser.fftSize/wVars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
+      // var amplitude = amplitude*amplitude / 200;
 
       particle.z = amplitude;
       particle.baseZ = amplitude;
@@ -188,8 +189,8 @@ export default (function(){
   }
 
   V.wave.stutterCamPosition = function(wCfg, wVars){
-    camera.position.x = wCfg.baseCamX + wVars.currentVolume* 2;
-    //camera.position.y = wCfg.baseCamY + wVars.currentVolume* 3;
+    // camera.position.x = wCfg.baseCamX + wVars.currentVolume* 2;
+    camera.position.y = wCfg.baseCamY + wVars.currentVolume* 3;
   }
 
   V.wave.changeView = function(){
