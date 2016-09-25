@@ -1,16 +1,16 @@
+import starburst from './starburst/main.js';
+// console.log(starburst);
+
 //config
-
-
 window.V = V || {};
 
 V.config = {
   viz: 0,
-  baseZoom: 200,
   fps: 60,
   fftSize: 512
 }
 
-V.vizArray = ['starburst', 'wave']
+V.vizArray = [starburst, 'wave']
 
 window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
@@ -22,7 +22,6 @@ window.scene = null
 
 window.mouseX = 0;
 window.mouseY = 0;
-var particles;
 
 
 V.init = function() {
@@ -63,21 +62,21 @@ V.init = function() {
 function update() {
   renderer.render( scene, camera ); // and render the scene from the perspective of the camera
   //*******THIS CHANGES**********
-  var currentViz = V[V.vizArray[V.config.viz]];
-  currentViz.updateFrame();
+  var currentViz = V.vizArray[V.config.viz];
+  currentViz.updateFrame(analyser);
   calcFPS();
 }
 
 V.startViz = function(){
   //*******THIS CHANGES**********
-  var currentViz = V[V.vizArray[V.config.viz]];
-  currentViz.makeParticles();
+  var currentViz = V.vizArray[V.config.viz];
+  currentViz.init();
 }
 
 V.setup3dScene = function() {
   // field of view, aspect ratio for render output, near and far clipping plane.
   camera = new THREE.PerspectiveCamera(80, windowWidth / window.innerHeight, 1, 4000 );
-  camera.position.z = V.config.baseZoom;
+  camera.position.z = 200;
 
   // the scene contains all the 3D object data
   scene = new THREE.Scene();
@@ -98,9 +97,9 @@ V.setup3dScene = function() {
 // AUDIO STARTS HERE
 // --------------------------------------------------------------------------
 
-window.context = new AudioContext();
-window.audioElement = document.getElementById("player");
-window.analyser = context.createAnalyser();
+const context = new AudioContext();
+const audioElement = document.getElementById("player");
+const analyser = context.createAnalyser();
 analyser.fftSize = V.config.fftSize;
 
 var source = context.createMediaElementSource(audioElement);

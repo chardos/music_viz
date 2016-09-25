@@ -1,6 +1,6 @@
 var path = require('path');
 module.exports = {
-  entry: './js/main.js',
+  entry: './js/index.js',
   output: {
        path: __dirname,
        filename: 'dist/js/bundle.js'

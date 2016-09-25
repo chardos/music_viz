@@ -32,12 +32,12 @@ V.wave.vars={
   cooledOff: true,
 }
 
-V.wave.makeParticles = function() { 
+V.wave.init = function() { 
 
   var wCfg = V.wave.config;
   var wVars = V.wave.vars;
   particleGeom = new THREE.Geometry();
-  var material; 
+  var material;
   var colors = [];
   camera.position.x = wCfg.baseCamX;
   camera.position.y = wCfg.baseCamY;
@@ -52,7 +52,7 @@ V.wave.makeParticles = function() {
       //create sheet of particles
       var x = i * wCfg.spacing;
       var y = i2 * wCfg.spacing;
-      var z = 0; 
+      var z = 0;
 
       particleGeom.vertices.push( new THREE.Vector3() );
       var index = i*wCfg.height + i2;
@@ -69,7 +69,7 @@ V.wave.makeParticles = function() {
     }
   }
   particleGeom.colors = colors;
-    
+
   // material
   material = new THREE.PointCloudMaterial({
     size: wCfg.particleBaseSize,
@@ -78,15 +78,15 @@ V.wave.makeParticles = function() {
   });
 
   particles = new THREE.PointCloud(particleGeom, material);
-  
+
   scene.add( particles );
 }
 
 
-V.wave.reset = function() { 
+V.wave.reset = function() {
 
 }
-V.wave.updateFrame = function() { 
+V.wave.updateFrame = function() {
 
   var cfg = V.config;
   var wCfg = V.wave.config;
@@ -103,7 +103,7 @@ V.wave.updateFrame = function() {
     }
   }
 
-  wVars.lastVolume = wVars.currentVolume; 
+  wVars.lastVolume = wVars.currentVolume;
 
   //PARTICLES ------------------------------------
   particles.geometry.verticesNeedUpdate = true;
@@ -120,23 +120,23 @@ V.wave.updateFrame = function() {
   V.wave.stutterCamPosition(wCfg, wVars);
 
   wVars.baseHue += 0.0003;
-  if(wVars.baseHue > 1){ 
-    wVars.baseHue = 0 
+  if(wVars.baseHue > 1){
+    wVars.baseHue = 0
   };
   camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
 }
 
 
-V.wave.selectColumn = function(index) { 
+V.wave.selectColumn = function(index) {
   var column = {};
   column.particles = [];
   column.indices = [];
   var startI = this.config.height*index;
   var endI = this.config.height*index + this.config.height
   for(var i=startI; i<endI; i++) {
-    column.particles.push(particles.geometry.vertices[i]); 
-    column.indices.push(i); 
+    column.particles.push(particles.geometry.vertices[i]);
+    column.indices.push(i);
   }
   return column;
 }
@@ -144,7 +144,7 @@ V.wave.selectColumn = function(index) {
 V.wave.iterateParticles = function(wCfg, wVars){
   // move particles to the left
   for(var i=0; i<particles.geometry.vertices.length; i++) {
-    particle = particles.geometry.vertices[i]; 
+    particle = particles.geometry.vertices[i];
     particle.x -= wCfg.spacing;
     if(particle.x < wCfg.width * wCfg.spacing * -1){
       particle.x = 0 - wCfg.spacing;
@@ -157,8 +157,8 @@ V.wave.iterateParticles = function(wCfg, wVars){
 V.wave.setWaveSlice = function(cfg, wVars){
   //set z values + colors
   for(var i=0; i < currentColumn.particles.length; i++) {
-    particle = currentColumn.particles[i]; 
-    index = currentColumn.indices[i]; 
+    particle = currentColumn.particles[i];
+    index = currentColumn.indices[i];
 
     //assign each particle to a FFT band
     var fftBand = i%(cfg.fftSize/wVars.heightToFFTratio)
@@ -181,7 +181,7 @@ V.wave.getAudioData = function(wVars, wCfg){
   analyser.getByteFrequencyData(frequencyData);
 
   wVars.currentVolume = 0;
-  for(var i=0; i<frequencyData.length; i++) { 
+  for(var i=0; i<frequencyData.length; i++) {
     wVars.currentVolume += frequencyData[i];
   }
   wVars.currentVolume /= V.config.fftSize;
@@ -219,5 +219,3 @@ V.wave.changeView = function(){
     wVars.cooledOffSmall = true;
   },wCfg.coolOffPeriodSmall)
 }
-
-

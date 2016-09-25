@@ -13,9 +13,9 @@ function spherize(x,y,z){
   z *= d;
   return {x: x, y: y, z: z}
 }
-        
+
 // there isn't a built in circle particle renderer f
-// so we have to define our own. 
+// so we have to define our own.
 
 function particleRender( context ) {
   // we get passed a reference to the canvas context
@@ -29,7 +29,7 @@ function particleRender( context ) {
 
 // called when the mouse moves
 function updateMouseCoords( event ) {
-  // store the mouseX and mouseY position 
+  // store the mouseX and mouseY position
   mouseX = event.clientX;
   mouseY = event.clientY;
 }
