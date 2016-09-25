@@ -31,7 +31,7 @@ V.init = function() {
 
   // add the mouse move listener
   document.addEventListener( 'mousemove', updateMouseCoords, false );
-  int = setInterval(update,1000/V.config.fps);
+  var int = setInterval(update,1000/V.config.fps);
 
   // changeVizint = setInterval(function(){
   //   //reset viz
