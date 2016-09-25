@@ -1,4 +1,4 @@
-import {analyser, audioElement} from '../audio.js';
+import {analyser, audioElement, getFreqData} from '../audio.js';
 let particles, frequencyData;
 
 export default (function(){
@@ -163,8 +163,8 @@ export default (function(){
   }
 
   function getAudioData(vars, config){
-    frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteFrequencyData(frequencyData);
+    frequencyData = getFreqData(analyser);
+
 
     vars.currentVolume = 0;
     for(var i=0; i<frequencyData.length; i++) {

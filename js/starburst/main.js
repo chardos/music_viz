@@ -1,5 +1,5 @@
 import {spherize} from './helpers.js';
-import {analyser} from '../audio.js';
+import {analyser, getFreqData} from '../audio.js';
 
 export default (function(){
   let particles;
@@ -72,14 +72,15 @@ export default (function(){
     //AUDIO ------------------------------------
 
     //get audio data
-    let frequencyData = new Uint8Array(analyser.frequencyBinCount);
-    analyser.getByteFrequencyData(frequencyData);
+
+    let frequencyData = getFreqData(analyser);
     //get average
     var averageVolume = 0;
     for(var i=0; i<frequencyData.length/5; i++) { //divide by 4 = just the bass
       averageVolume += frequencyData[i];
     }
     averageVolume /= 500;
+
 
     //PARTICLES ------------------------------------
 
