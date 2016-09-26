@@ -5,7 +5,7 @@ import wave from './wave/main.js';
 window.V = V || {};
 
 V.config = {
-  viz: 0,
+  viz: 1,
   fps: 60,
   fftSize: 512
 }

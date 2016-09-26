@@ -1,8 +1,10 @@
 import {spherize} from './helpers.js';
-import {analyser, getFreqData} from '../audio.js';
+import {analyser, getAudioData} from '../audio.js';
 
 export default (function(){
-  let particles;
+  let particles,
+      currentVolume,
+      frequencyData;
 
   let config = {
     panMultiplier: 300, //how much mouse affects pan
@@ -71,16 +73,8 @@ export default (function(){
 
     //AUDIO ------------------------------------
 
-    //get audio data
-
-    let frequencyData = getFreqData(analyser);
-    //get average
-    var averageVolume = 0;
-    for(var i=0; i<frequencyData.length/5; i++) { //divide by 4 = just the bass
-      averageVolume += frequencyData[i];
-    }
-    averageVolume /= 500;
-
+    let audioData = getAudioData();
+    ({currentVolume, frequencyData} = audioData)
 
     //PARTICLES ------------------------------------
 
@@ -99,7 +93,7 @@ export default (function(){
       var amplitude = frequencyData[fftBand];
 
       //make particles with 0 amplitude bounce to averagevolume
-      if (amplitude == 0) amplitude = averageVolume;
+      if (amplitude == 0) amplitude = currentVolume;
 
       particle.x = particle.origX * amplitude * vars.sphereRange + particle.origX*vars.sphereFloor;
       particle.y = particle.origY * amplitude * vars.sphereRange + particle.origY*vars.sphereFloor;
@@ -112,7 +106,7 @@ export default (function(){
       colors[i].setHSL( modifiedHue, 1, .6 );
 
       //if no volume, blacken all particles.
-      if (averageVolume == 0){
+      if (currentVolume == 0){
         colors[i].setHSL(0,0,0);
       }
 

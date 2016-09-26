@@ -1,5 +1,7 @@
-import {analyser, audioElement, getFreqData} from '../audio.js';
-let particles, frequencyData;
+import {analyser, audioElement, getAudioData} from '../audio.js';
+let particles,
+    frequencyData,
+    currentVolume
 
 export default (function(){
   let config = {
@@ -78,9 +80,10 @@ export default (function(){
 
 
     //AUDIO ------------------------------------
+    let audioData = getAudioData();
+    ({currentVolume, frequencyData} = audioData)
 
-    getAudioData(vars, config, analyser);
-    var volumeDelta = vars.currentVolume - vars.lastVolume;
+    var volumeDelta = currentVolume - vars.lastVolume;
 
     if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
       if(vars.cooledOff == true){
@@ -88,7 +91,7 @@ export default (function(){
       }
     }
 
-    vars.lastVolume = vars.currentVolume;
+    vars.lastVolume = currentVolume;
 
     //PARTICLES ------------------------------------
     particles.geometry.verticesNeedUpdate = true;
@@ -162,20 +165,12 @@ export default (function(){
     particles.geometry.colors = vars.colors;
   }
 
-  function getAudioData(vars, config){
-    frequencyData = getFreqData(analyser);
 
 
-    vars.currentVolume = 0;
-    for(var i=0; i<frequencyData.length; i++) {
-      vars.currentVolume += frequencyData[i];
-    }
-    vars.currentVolume /= analyser.fftSize;
-  }
 
   function stutterCamPosition(config, vars){
     // camera.position.x = config.baseCamX + vars.currentVolume* 2;
-    camera.position.y = config.baseCamY + vars.currentVolume* 3;
+    camera.position.y = config.baseCamY + currentVolume* 3;
   }
 
   function changeView(){
