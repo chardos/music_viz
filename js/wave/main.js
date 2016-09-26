@@ -1,7 +1,12 @@
 import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
+import {setup3dScene} from '../helpers/3d.js';
+
 let particles,
     frequencyData,
-    currentVolume
+    currentVolume,
+    camera,
+    scene,
+    renderer;
 
 export default (function(){
   let config = {
@@ -28,7 +33,10 @@ export default (function(){
     cooledOff: true,
   }
 
-  function init() {
+  function init(canvas, mainConfig) {
+    let threeD = setup3dScene(canvas);
+    ({camera, scene, renderer} = threeD)
+
     let particleGeom = new THREE.Geometry();
     var material;
     var colors = [];
@@ -74,9 +82,18 @@ export default (function(){
     particles = new THREE.PointCloud(particleGeom, material);
 
     scene.add( particles );
+
+    window.int = setInterval(update,1000/mainConfig.fps);
+
   }
 
-  function updateFrame(analyser) {
+  function update() {
+    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
+    updateFrame();
+    calcFPS();
+  }
+
+  function updateFrame() {
 
 
     //AUDIO ------------------------------------

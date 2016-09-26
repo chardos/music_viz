@@ -25,7 +25,7 @@ export default (function(){
     particleGeom: null
   }
 
-  function reset() {
+  function teardown() {
     vars.particleGeom.dispose();
   }
 

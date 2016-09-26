@@ -9,7 +9,7 @@ let mainConfig = {
 }
 
 let vizArray = [starburst, wave],
-    currentViz = starburst,
+    currentViz = wave,
     canvasCount = 0
 
 window.lastCalledTime = null;
