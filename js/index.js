@@ -1,16 +1,17 @@
 import starburst from './starburst/main.js';
 import wave from './wave/main.js';
+import {setup3dScene} from './helpers/3d.js';
 
-//config
-window.V = V || {};
+//mainConfig
 
-V.config = {
-  viz: 1,
+let mainConfig = {
   fps: 60,
   fftSize: 512
 }
 
-V.vizArray = [starburst, wave]
+let vizArray = [starburst, wave],
+    currentViz = starburst,
+    canvasCount = 0
 
 window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
@@ -24,79 +25,33 @@ window.mouseX = 0;
 window.mouseY = 0;
 
 
-V.init = function() {
-  var cfg = V.config;
+let init = function() {
   setup3dScene();
+  let canvas = document.createElement('canvas');
+  startViz(canvas);
 
-  startViz();
-
-  // add the mouse move listener
-  document.addEventListener( 'mousemove', updateMouseCoords, false );
-  window.int = setInterval(update,1000/V.config.fps);
-
-  // changeVizint = setInterval(function(){
-  //   //reset viz
-  //   var currentViz = V[V.vizArray[V.config.viz]];
-  //   currentViz.reset();
-  //
-  //   //reset scene
-  //   element = document.querySelectorAll("canvas");
-  //   element[0].parentNode.removeChild(element[0]);
-  //   setup3dScene();
-  //
-  //   //set viz
-  //   cfg.viz++;
-  //   if (cfg.viz >= V.vizArray.length){
-  //     cfg.viz = 0;
-  //   }
-  //   startViz();
-  // },3500)
-
-
-
-  renderer.render( scene, camera );
-
+  window.int = setInterval(update,1000/mainConfig.fps);
 }
 
 
 function update() {
   renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-  //*******THIS CHANGES**********
-  var currentViz = V.vizArray[V.config.viz];
   currentViz.updateFrame();
   calcFPS();
 }
 
+
 function startViz(){
-  //*******THIS CHANGES**********
-  var currentViz = V.vizArray[V.config.viz];
+  // create the canvas, pass it into the currentviz
+  // WRITE CODE
+
+  //init currentviz with canvas
   currentViz.init();
 }
 
-function setup3dScene() {
-  // field of view, aspect ratio for render output, near and far clipping plane.
-  camera = new THREE.PerspectiveCamera(80, windowWidth / window.innerHeight, 1, 4000 );
-  camera.position.z = 200;
-
-  // the scene contains all the 3D object data
-  scene = new THREE.Scene();
-
-  // camera needs to go in the scene
-  scene.add(camera);
-
-  // and the CanvasRenderer figures out what the
-  // stuff in the scene looks like and draws it!
-  renderer = new THREE.WebGLRenderer();
-  renderer.setSize( window.innerWidth, window.innerHeight );
-
-  // the renderer's canvas domElement is added to the body
-  document.body.appendChild( renderer.domElement );
-}
 
 // --------------------------------------------------------------------------
-// AUDIO STARTS HERE
+// Start
 // --------------------------------------------------------------------------
 
-
-
-V.init();
+init();

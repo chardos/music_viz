@@ -1,5 +1,5 @@
 import {spherize} from './helpers.js';
-import {analyser, getAudioData} from '../audio.js';
+import {analyser, getAudioData} from '../helpers/audio.js';
 
 export default (function(){
   let particles,
@@ -130,7 +130,6 @@ export default (function(){
   function changeView(){
 
     if(vars.view == 0){
-      console.log(0);
       vars.sphereFloor = 100;
       vars.sphereRange = 0.6;
       setTimeout(function(){
@@ -138,7 +137,6 @@ export default (function(){
       },700)
     }
     if(vars.view == 1){
-      console.log(1);
       config.baseZoom = 175;
       setTimeout(function(){
         particles.material.size = vars.particleBaseSize * 2;
@@ -148,7 +146,6 @@ export default (function(){
       },1200)
     }
     if(vars.view == 2){
-      console.log(2);
       vars.sphereFloor = 0;
       vars.sphereRange = 1;
       setTimeout(function(){
@@ -161,7 +158,6 @@ export default (function(){
       },1200)
     }
     if(vars.view == 3){
-      console.log(3);
       vars.sphereFloor = 50;
       vars.sphereRange = 1;
       config.baseZoom = 200;
@@ -177,15 +173,12 @@ export default (function(){
       },1200)
     }
     if(vars.view == 4){
-      console.log(4);
       vars.sphereFloor=120;
       vars.sphereRange=.05;
       setTimeout(function(){
         config.baseZoom = 160;
       },1300)
     }
-
-
     vars.view++;
     if(vars.view > 4){
       vars.view = 0;

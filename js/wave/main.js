@@ -1,4 +1,4 @@
-import {analyser, audioElement, getAudioData} from '../audio.js';
+import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
 let particles,
     frequencyData,
     currentVolume
@@ -12,7 +12,7 @@ export default (function(){
     spacing: 8,
     baseCamX: -600,
     baseCamY: -400,
-    baseCamZ: 900,
+    baseCamZ: 700,
     coolOffPeriod: 2500,
     bigBeatSensitivity: 3 //lower is more sensitive
   }
