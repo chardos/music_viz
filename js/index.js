@@ -16,10 +16,21 @@ window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
 window.windowHeight = window.innerHeight;
 
-
+function Stage(currentViz){
+  return{
+    init: function(){
+      let canvas = document.createElement('canvas')
+      canvas.id = `canvas${canvasCount}`
+      canvasCount++;
+      currentViz.init(canvas, mainConfig)
+    }
+  }
+}
 let init = function() {
-  let canvas = document.createElement('canvas');
-  currentViz.init(canvas, mainConfig);
+  let stage = Stage(starburst)
+  stage.init();
+  let stage2 = Stage(wave)
+  stage2.init();
 }
 
 // function update() {
