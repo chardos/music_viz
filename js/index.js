@@ -1,6 +1,5 @@
 import starburst from './starburst/main.js';
 import wave from './wave/main.js';
-import {setup3dScene} from './helpers/3d.js';
 
 //mainConfig
 
@@ -16,39 +15,18 @@ let vizArray = [starburst, wave],
 window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
 window.windowHeight = window.innerHeight;
-// the main three.js components
-window.camera = null
-window.renderer = null
-window.scene = null
-
-window.mouseX = 0;
-window.mouseY = 0;
 
 
 let init = function() {
-  setup3dScene();
   let canvas = document.createElement('canvas');
-  startViz(canvas);
-
-  window.int = setInterval(update,1000/mainConfig.fps);
+  currentViz.init(canvas, mainConfig);
 }
 
-
-function update() {
-  renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-  currentViz.updateFrame();
-  calcFPS();
-}
-
-
-function startViz(){
-  // create the canvas, pass it into the currentviz
-  // WRITE CODE
-
-  //init currentviz with canvas
-  currentViz.init();
-}
-
+// function update() {
+//   renderer.render( scene, camera ); // and render the scene from the perspective of the camera
+//   currentViz.updateFrame();
+//   calcFPS();
+// }
 
 // --------------------------------------------------------------------------
 // Start

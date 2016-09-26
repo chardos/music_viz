@@ -1,10 +1,14 @@
 import {spherize} from './helpers.js';
 import {analyser, getAudioData} from '../helpers/audio.js';
+import {setup3dScene} from '../helpers/3d.js';
 
 export default (function(){
   let particles,
       currentVolume,
-      frequencyData;
+      frequencyData,
+      camera,
+      scene,
+      renderer;
 
   let config = {
     panMultiplier: 300, //how much mouse affects pan
@@ -25,8 +29,17 @@ export default (function(){
     vars.particleGeom.dispose();
   }
 
+  function update() {
+    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
+    updateFrame();
+    calcFPS();
+  }
+
   //the init function called from the main.js
-  function init() {
+  function init(canvas, mainConfig) {
+
+    let threeD = setup3dScene(canvas);
+    ({camera, scene, renderer} = threeD)
 
     vars.particleGeom = new THREE.Geometry()
     var particleGeom = vars.particleGeom;
@@ -65,6 +78,9 @@ export default (function(){
     let changeViewInt = setInterval(function(){
       changeView();
     },1500)
+
+    window.int = setInterval(update,1000/mainConfig.fps);
+
 
   }
 
@@ -116,12 +132,12 @@ export default (function(){
     geometry.colors = colors;
 
     //move cam up down out on mouseY
-    var cameraOffset = mouseY/windowHeight - 0.5;
-    camera.position.y = cameraOffset * config.panMultiplier;
+    // var cameraOffset = mouseY/windowHeight - 0.5;
+    // camera.position.y = cameraOffset * config.panMultiplier;
 
     //rotate cam left right on mouseX
-    var cameraOffset = mouseX/windowWidth - 0.5;
-    camera.position.x = cameraOffset * config.panMultiplier * -1;
+    // var cameraOffset = mouseX/windowWidth - 0.5;
+    // camera.position.x = cameraOffset * config.panMultiplier * -1;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
   }
@@ -184,8 +200,5 @@ export default (function(){
       vars.view = 0;
     }
   }
-  return{
-    init,
-    updateFrame
-  }
+  return { init }
 }())
