@@ -90,7 +90,7 @@ export default (function(){
 
   }
 
-  function update() {
+  function teardown() {
 
   }
 

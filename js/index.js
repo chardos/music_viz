@@ -9,7 +9,8 @@ let mainConfig = {
 }
 
 let vizArray = [starburst, wave],
-    currentViz = starburst,
+    currentViz,
+    stageHolder = {},
     canvasCount = 0
 
 window.lastCalledTime = null;
@@ -31,14 +32,38 @@ function Stage(currentViz){
   }
 }
 let init = function() {
-  let stage = Stage(currentViz)
-  stage.init();
+  //get random viz, set current and remove it from the array
+  var randNum = V.zeroToRand(vizArray.length - 1)
+  currentViz = vizArray[randNum]
+  vizArray.splice(randNum, 1);
 
+  //init stage
+  stageHolder['stage' + canvasCount] = Stage(currentViz)
+  stageHolder['stage' + canvasCount].init();
+
+  setTimeout(function(){
+    transition();
+  },1000)
   // let stage2 = Stage(wave)
   // stage2.init();
 }
 
 let transition = function(){
+  //kill current viz
+  stageHolder['stage' + (canvasCount - 1)].destroy()
+
+  //get random viz, set current
+  var randNum = V.zeroToRand(vizArray.length - 1)
+  currentViz = vizArray[randNum]
+
+  //push old current, slice out new current
+  vizArray.push(currentViz)
+  vizArray.splice(randNum, 1);
+
+  //init stage
+  stageHolder['stage' + canvasCount] = Stage(currentViz)
+  stageHolder['stage' + canvasCount].init();
+
 
 }
 

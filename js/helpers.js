@@ -5,6 +5,10 @@ V.oneToRand = function(num){
   return Math.ceil(Math.random()*num);
 }
 
+V.zeroToRand = function(num){
+  return Math.ceil(Math.random()*(num + 1)) - 1;
+}
+
 // there isn't a built in circle particle renderer f
 // so we have to define our own.
 
