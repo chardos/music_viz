@@ -35,7 +35,10 @@ export default (function(){
 
   function setup(canvas, mainConfig) {
     let threeD = setup3dScene(canvas);
-    ({camera, scene, renderer} = threeD)
+    ({camera, scene} = threeD)
+    renderer = renderer || new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
+    renderer.setSize( window.innerWidth, window.innerHeight )
+    document.body.appendChild( renderer.domElement )
 
     let particleGeom = new THREE.Geometry();
     var material;
@@ -83,18 +86,17 @@ export default (function(){
 
     scene.add( particles );
 
-    window.int = setInterval(update,1000/mainConfig.fps);
+    requestAnimationFrame(updateFrame);
 
   }
 
   function update() {
-    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-    updateFrame();
-    calcFPS();
+
   }
 
   function updateFrame() {
-
+    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
+    calcFPS();
 
     //AUDIO ------------------------------------
     let audioData = getAudioData();
@@ -130,6 +132,7 @@ export default (function(){
     };
     camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
+    requestAnimationFrame(updateFrame);
   }
 
 

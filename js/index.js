@@ -9,7 +9,7 @@ let mainConfig = {
 }
 
 let vizArray = [starburst, wave],
-    currentViz = wave,
+    currentViz = starburst,
     canvasCount = 0
 
 window.lastCalledTime = null;
@@ -31,25 +31,16 @@ function Stage(currentViz){
   }
 }
 let init = function() {
-  let stage = Stage(starburst)
+  let stage = Stage(currentViz)
   stage.init();
 
-  // NOTE TO SELF: Once you set a settimeout between destroy and init, the memory leak has dissappeared
-  // window.yo = setInterval(function(){
-  //   stage.destroy();
-  //   setTimeout(function(){
-  //     stage.init();
-  //   },5)
-  // },200)
   // let stage2 = Stage(wave)
   // stage2.init();
 }
 
-// function update() {
-//   renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-//   currentViz.updateFrame();
-//   calcFPS();
-// }
+let transition = function(){
+
+}
 
 // --------------------------------------------------------------------------
 // Start
