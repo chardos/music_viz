@@ -33,7 +33,7 @@ export default (function(){
     cooledOff: true,
   }
 
-  function init(canvas, mainConfig) {
+  function setup(canvas, mainConfig) {
     let threeD = setup3dScene(canvas);
     ({camera, scene, renderer} = threeD)
 
@@ -217,7 +217,7 @@ export default (function(){
   }
 
   return{
-    init,
+    setup,
     updateFrame
   }
 }())

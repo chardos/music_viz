@@ -8,7 +8,10 @@ export default (function(){
       frequencyData,
       camera,
       scene,
-      renderer;
+      renderer,
+      particleGeom,
+      material,
+      playing
 
   let config = {
     panMultiplier: 300, //how much mouse affects pan
@@ -22,28 +25,18 @@ export default (function(){
     sphereRange: 1,
     baseHue: 0,
     view: 0,
-    particleGeom: null
-  }
-
-  function teardown() {
-    vars.particleGeom.dispose();
-  }
-
-  function update() {
-    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-    updateFrame();
-    calcFPS();
   }
 
   //the init function called from the main.js
-  function init(canvas, mainConfig) {
-
+  function setup(canvas, mainConfig) {
+    playing = true;
     let threeD = setup3dScene(canvas);
-    ({camera, scene, renderer} = threeD)
+    ({camera, scene} = threeD)
+    renderer = renderer || new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
+    renderer.setSize( window.innerWidth, window.innerHeight )
+    document.body.appendChild( renderer.domElement )
 
-    vars.particleGeom = new THREE.Geometry()
-    var particleGeom = vars.particleGeom;
-    var material;
+    particleGeom = new THREE.Geometry()
     window.colors = [];
 
     //CREATE THE SPHERE
@@ -71,21 +64,29 @@ export default (function(){
         size: vars.particleBaseSize,
         vertexColors: THREE.VertexColors
     });
-
     particles = new THREE.PointCloud(particleGeom, material);
     scene.add( particles );
 
-    let changeViewInt = setInterval(function(){
-      changeView();
-    },1500)
-
-    window.int = setInterval(update,1000/mainConfig.fps);
+    // let changeViewInt = setInterval(function(){
+    //   changeView();
+    // },1500)
+    requestAnimationFrame(updateFrame);
 
 
   }
 
+  function teardown() {
+    playing = false;
+    scene.remove(particles);
+    // renderer.clearTarget( particleGeom );
+    particleGeom.dispose();
+    material.dispose();
+  }
+
 
   function updateFrame() {
+    renderer.render( scene, camera ); // and render the scene from the perspective of the camera
+    calcFPS();
 
     //AUDIO ------------------------------------
 
@@ -140,6 +141,9 @@ export default (function(){
     // camera.position.x = cameraOffset * config.panMultiplier * -1;
     camera.lookAt(new THREE.Vector3(0,0,0));
 
+    if(playing){
+      requestAnimationFrame(updateFrame);
+    }
   }
 
 
@@ -200,5 +204,6 @@ export default (function(){
       vars.view = 0;
     }
   }
-  return { init }
+
+  return { setup, teardown }
 }())
