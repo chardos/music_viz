@@ -41,9 +41,21 @@ let init = function() {
   stageHolder['stage' + canvasCount] = Stage(currentViz)
   stageHolder['stage' + canvasCount].init();
 
-  setTimeout(function(){
+  setInterval(function(){
     transition();
-  },1000)
+  },2000)
+
+
+  // let stage = Stage(wave)
+  // stage.init();
+  //
+  // setInterval(function(){
+  //   stage.destroy();
+  //   setTimeout(function(){
+  //     stage.init();
+  //   },100)
+  // },2000)
+
   // let stage2 = Stage(wave)
   // stage2.init();
 }

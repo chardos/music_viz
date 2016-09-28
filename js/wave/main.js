@@ -2,11 +2,16 @@ import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
 import {setup3dScene} from '../helpers/3d.js';
 
 let particles,
+    particleGeom,
     frequencyData,
     currentVolume,
     camera,
     scene,
-    renderer;
+    renderer,
+    material,
+    colors,
+    columnNum,
+    playing;
 
 export default (function(){
   let config = {
@@ -23,26 +28,22 @@ export default (function(){
   }
   let vars = {
     heightToFFTratio: null,
-    sphereFloor: 0,
-    sphereRange: 1,
     baseHue: Math.random(),
-    column: 0,
-    colors: [],
     currentVolume: null,
     lastVolume: 500, //random large number
     cooledOff: true,
   }
 
   function setup(canvas, mainConfig) {
+    columnNum = 0;
+    playing = true;
     let threeD = setup3dScene(canvas);
     ({camera, scene} = threeD)
     renderer = renderer || new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
-
-    let particleGeom = new THREE.Geometry();
-    var material;
-    var colors = [];
+    particleGeom = new THREE.Geometry();
+    colors = [];
     camera.position.x = config.baseCamX;
     camera.position.y = config.baseCamY;
     camera.position.z = config.baseCamZ;
@@ -73,7 +74,7 @@ export default (function(){
         particleGeom.vertices[index].hue = hue;
       }
     }
-    particleGeom.colors = colors;
+    particleGeom.colors = colors; // TANZ
 
     // material
     material = new THREE.PointCloudMaterial({
@@ -83,6 +84,7 @@ export default (function(){
     });
 
     particles = new THREE.PointCloud(particleGeom, material);
+    console.log(particles);
 
     scene.add( particles );
 
@@ -91,7 +93,11 @@ export default (function(){
   }
 
   function teardown() {
-
+    playing = false;
+    particleGeom.dispose();
+    material.dispose();
+    scene.remove(particles);
+    columnNum = 0;
   }
 
   function updateFrame() {
@@ -102,28 +108,27 @@ export default (function(){
     let audioData = getAudioData();
     ({currentVolume, frequencyData} = audioData)
 
-    var volumeDelta = currentVolume - vars.lastVolume;
-
-    if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
-      if(vars.cooledOff == true){
-        changeView();
-      }
-    }
-
-    vars.lastVolume = currentVolume;
+    //BIG BEAT DETECTION------------------------
+    // var volumeDelta = currentVolume - vars.lastVolume;
+    // if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
+    //   if(vars.cooledOff == true){
+    //     changeView();
+    //   }
+    // }
+    // vars.lastVolume = currentVolume;
 
     //PARTICLES ------------------------------------
     particles.geometry.verticesNeedUpdate = true;
     particles.geometry.colorsNeedUpdate = true;
 
-    let currentColumn = selectColumn(vars.column);
-    vars.column++;
-    if(vars.column >= config.width){
-      vars.column = 0;
+    let currentColumn = selectColumn(columnNum);
+    columnNum++;
+    if(columnNum >= config.width){
+      columnNum = 0;
     }
 
-    setWaveSlice(currentColumn);
-    iterateParticles(config, vars);
+    stylizeColumn(currentColumn);
+    shiftParticlesLeft(config, vars);
     // stutterCamPosition(config, vars);
 
     vars.baseHue += 0.0003;
@@ -132,7 +137,9 @@ export default (function(){
     };
     camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
-    requestAnimationFrame(updateFrame);
+    if(playing){
+      requestAnimationFrame(updateFrame);
+    }
   }
 
 
@@ -150,7 +157,7 @@ export default (function(){
     return column;
   }
 
-  function iterateParticles(config, vars){
+  function shiftParticlesLeft(config, vars){
     // move particles to the left
     for(var i=0; i<particles.geometry.vertices.length; i++) {
       let particle = particles.geometry.vertices[i];
@@ -162,7 +169,7 @@ export default (function(){
     }
   }
 
-  function setWaveSlice(currentColumn){
+  function stylizeColumn(currentColumn){
     //set z values + colors
     for(var i=0; i < currentColumn.particles.length; i++) {
       let particle = currentColumn.particles[i];
@@ -177,12 +184,13 @@ export default (function(){
       particle.baseZ = amplitude;
 
       //colorize the particle
-      vars.colors[index] = new THREE.Color();
+      colors[index] = new THREE.Color();
       var modifiedHue = vars.baseHue + (frequencyData[fftBand]/600)
-      vars.colors[index].setHSL( modifiedHue, 1, amplitude/255 );
+      colors[index].setHSL( modifiedHue, 1, amplitude/255 );
 
     }
-    particles.geometry.colors = vars.colors;
+    // particles.geometry.colors = colors; //TANZ
+
   }
 
 
@@ -221,6 +229,6 @@ export default (function(){
 
   return{
     setup,
-    updateFrame
+    teardown
   }
 }())
