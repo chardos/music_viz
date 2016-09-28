@@ -32,7 +32,7 @@ export default (function(){
     playing = true;
     let threeD = setup3dScene(canvas);
     ({camera, scene} = threeD)
-    renderer = renderer || new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
+    renderer = new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
 
@@ -205,5 +205,5 @@ export default (function(){
     }
   }
 
-  return { setup, teardown }
+  return { setup, teardown, label: 'Starburst' }
 }())

@@ -39,7 +39,7 @@ export default (function(){
     playing = true;
     let threeD = setup3dScene(canvas);
     ({camera, scene} = threeD)
-    renderer = renderer || new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
+    renderer = new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
     particleGeom = new THREE.Geometry();
@@ -84,8 +84,6 @@ export default (function(){
     });
 
     particles = new THREE.PointCloud(particleGeom, material);
-    console.log(particles);
-
     scene.add( particles );
 
     requestAnimationFrame(updateFrame);
@@ -229,6 +227,7 @@ export default (function(){
 
   return{
     setup,
-    teardown
+    teardown,
+    label: 'Wave'
   }
 }())

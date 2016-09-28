@@ -17,17 +17,22 @@ window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
 window.windowHeight = window.innerHeight;
 
-function Stage(currentViz){
+function Stage(viz){
   let canvas = document.createElement('canvas')
   return{
     init: function(){
       canvas.id = `canvas${canvasCount}`
-      currentViz.setup(canvas, mainConfig)
+      console.log('id',canvas.id);
+      viz.setup(canvas, mainConfig)
       canvasCount++;
     },
     destroy: function(){
-      currentViz.teardown()
-      canvas.parentNode.removeChild(canvas)
+      viz.teardown()
+      // canvas.parentNode.removeChild(canvas)
+      document.querySelector('canvas').remove()
+    },
+    getLabel: function(){
+      return viz.label
     }
   }
 }
@@ -35,7 +40,7 @@ let init = function() {
   //get random viz, set current and remove it from the array
   var randNum = V.zeroToRand(vizArray.length - 1)
   currentViz = vizArray[randNum]
-  vizArray.splice(randNum, 1);
+  // vizArray.splice(randNum, 1);
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)
@@ -59,6 +64,13 @@ let init = function() {
   // let stage2 = Stage(wave)
   // stage2.init();
 }
+function printVizArray(){
+  console.log('====================');
+  vizArray.forEach(function(x){
+    console.log(x);
+  })
+  console.log('====================');
+}
 
 let transition = function(){
   //kill current viz
@@ -67,10 +79,13 @@ let transition = function(){
   //get random viz, set current
   var randNum = V.zeroToRand(vizArray.length - 1)
   currentViz = vizArray[randNum]
+  console.log(randNum);
 
   //push old current, slice out new current
-  vizArray.push(currentViz)
-  vizArray.splice(randNum, 1);
+  printVizArray()
+  // vizArray.push(currentViz)
+  // vizArray.splice(randNum, 1);
+  printVizArray()
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)
