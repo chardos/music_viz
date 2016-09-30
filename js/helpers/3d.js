@@ -7,9 +7,5 @@ export function setup3dScene(canvas) {
   let scene = new THREE.Scene()
   scene.add(camera)
 
-  let renderer = new THREE.WebGLRenderer({canvas: canvas})
-  renderer.setSize( window.innerWidth, window.innerHeight )
-  document.body.appendChild( renderer.domElement )
-
-  return {camera, scene, renderer}
+  return {camera, scene}
 }
