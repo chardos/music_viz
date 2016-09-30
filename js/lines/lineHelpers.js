@@ -1,31 +1,5 @@
 import {random} from '../helpers.js';
 
-export function Line(){
-  var x = Math.ceil(Math.random() * windowWidth)
-  var y = Math.ceil(Math.random() * innerHeight)
-  this.lineWidth = random(1,6);
-  this.direction = getRandomDirection( random(0,3) );
-  let hue = random(1,360)
-  let saturation = random(60,100)
-  let lightness = random(15,50)
-  this.color = `hsl(${hue},${saturation}%,${lightness}%)`
-  // var direction = getRandomDirection( random(0,3) );
-  this.secondsTilChange = random(1,4) * 60;
-  this.lastPosition = null;
-  this.currentPosition = {x, y};
-}
-
-Line.prototype.draw = function (last, current, lineWidth, ctx){
-  ctx.beginPath();
-  ctx.moveTo(last.x, last.y);
-  ctx.lineTo(current.x, current.y);
-  ctx.lineWidth = lineWidth;
-  ctx.lineCap = 'round';
-  ctx.strokeStyle = this.color;
-  ctx.stroke();
-  ctx.closePath();
-}
-
 export function move(pos, direction){
   if(direction == 'up'){
     return { x: pos.x, y: pos.y - 1};
@@ -41,7 +15,10 @@ export function move(pos, direction){
   }
 }
 
-function getRandomDirection(n){
+export function getColor(h, s, l, a='0.5'){
+  return `hsla(${h},${s}%,${l}%, ${a})`
+}
+export function getRandomDirection(n){
   var directions = ['up', 'right', 'down', 'left'];
   return directions[n];
 }
