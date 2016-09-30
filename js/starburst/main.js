@@ -4,6 +4,7 @@ import {setup3dScene} from '../helpers/3d.js';
 
 export default (function(){
   let particles,
+      changeViewInterval,
       currentVolume,
       frequencyData,
       camera,
@@ -67,20 +68,20 @@ export default (function(){
     particles = new THREE.PointCloud(particleGeom, material);
     scene.add( particles );
 
-    // let changeViewInt = setInterval(function(){
-    //   changeView();
-    // },1500)
+    changeViewInterval = setInterval(function(){
+      changeView();
+    },1500)
     requestAnimationFrame(updateFrame);
 
 
   }
 
   function teardown() {
-    playing = false;
-    scene.remove(particles);
-    // renderer.clearTarget( particleGeom );
-    particleGeom.dispose();
-    material.dispose();
+    clearInterval(changeViewInterval)
+    playing = false
+    scene.remove(particles)
+    particleGeom.dispose()
+    material.dispose()
   }
 
 
