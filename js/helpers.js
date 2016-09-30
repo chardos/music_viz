@@ -9,6 +9,13 @@ V.zeroToRand = function(num){
   return Math.ceil(Math.random()*(num + 1)) - 1;
 }
 
+V.swapForNewArrayItem = function(currItem, arr){
+  var rand = Math.ceil(Math.random()*(arr.length)) - 1
+  arr.push(currItem);
+  var newItem = arr.splice(rand, 1);
+  return newItem[0];
+}
+
 // there isn't a built in circle particle renderer f
 // so we have to define our own.
 

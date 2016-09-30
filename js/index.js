@@ -10,9 +10,9 @@ let mainConfig = {
 
 let vizArray = [starburst, wave],
     currentViz,
-    stageHolder = {},
     canvasCount = 0
 
+window.stageHolder = {};
 window.lastCalledTime = null;
 window.windowWidth = window.innerWidth;
 window.windowHeight = window.innerHeight;
@@ -37,10 +37,12 @@ function Stage(viz){
   }
 }
 let init = function() {
+  console.log('In/itTED');
   //get random viz, set current and remove it from the array
   var randNum = V.zeroToRand(vizArray.length - 1)
   currentViz = vizArray[randNum]
-  // vizArray.splice(randNum, 1);
+  vizArray.splice(randNum, 1);
+  printVizArray();
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)
@@ -65,26 +67,28 @@ let init = function() {
   // stage2.init();
 }
 function printVizArray(){
-  console.log('====================');
+  var str = ''
   vizArray.forEach(function(x){
-    console.log(x);
+    str += x.label
   })
-  console.log('====================');
+  console.log(`[${str}]`);
 }
 
 let transition = function(){
   //kill current viz
   stageHolder['stage' + (canvasCount - 1)].destroy()
 
-  //get random viz, set current
-  var randNum = V.zeroToRand(vizArray.length - 1)
-  currentViz = vizArray[randNum]
-  console.log(randNum);
+  currentViz = V.swapForNewArrayItem(currentViz, vizArray)
 
-  //push old current, slice out new current
-  printVizArray()
-  // vizArray.push(currentViz)
+  //get random viz, set current
+  // var randNum = V.zeroToRand(vizArray.length - 1)
+  // let lastViz = currentViz
+  //
+  // //push old current, slice out new current
   // vizArray.splice(randNum, 1);
+  // vizArray.push(lastViz)
+  // console.log('pushed', lastViz.label);
+  // currentViz = vizArray[randNum]
   printVizArray()
 
   //init stage
