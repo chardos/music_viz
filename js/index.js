@@ -7,10 +7,11 @@ import lines from './lines/main.js';
 
 let mainConfig = {
   fps: 60,
+  vizDuration: 12,
   fftSize: 512
 }
 
-let vizArray = [starburst, wave, lines],
+let vizArray = [/*starburst, wave,*/ lines],
     currentViz,
     canvasCount = 0
 
@@ -41,7 +42,7 @@ function Stage(viz){
     }
   }
 }
-let init = function() {
+let mainInit = function() {
   initFullScreenHandlers();
   //get random viz, set current and remove it from the array
   var randNum = zeroToRand(vizArray.length - 1)
@@ -54,16 +55,10 @@ let init = function() {
 
   setInterval(function(){
     transition();
-  },10000)
+  },mainConfig.vizDuration * 1000)
 
 }
-function printVizArray(){
-  var str = ''
-  vizArray.forEach(function(x){
-    str += x.label
-  })
-  console.log(`[${str}]`);
-}
+
 
 let transition = function(){
   stageHolder['stage' + (canvasCount - 1)].getCanvas().style.opacity = 0;
@@ -71,7 +66,6 @@ let transition = function(){
 
   (function(canvasCount){
     setTimeout(function(){
-      console.log('count', canvasCount);
       stageHolder['stage' + (canvasCount - 1)].destroy()
     },2500)
   }(canvasCount))
@@ -89,4 +83,4 @@ let transition = function(){
 // Start
 // --------------------------------------------------------------------------
 
-init();
+mainInit();
