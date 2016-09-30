@@ -107,13 +107,13 @@ export default (function(){
     ({currentVolume, frequencyData} = audioData)
 
     //BIG BEAT DETECTION------------------------
-    // var volumeDelta = currentVolume - vars.lastVolume;
-    // if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
-    //   if(vars.cooledOff == true){
-    //     changeView();
-    //   }
-    // }
-    // vars.lastVolume = currentVolume;
+    var volumeDelta = currentVolume - vars.lastVolume;
+    if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
+      if(vars.cooledOff == true){
+        changeView();
+      }
+    }
+    vars.lastVolume = currentVolume;
 
     //PARTICLES ------------------------------------
     particles.geometry.verticesNeedUpdate = true;
@@ -207,7 +207,8 @@ export default (function(){
     //camera.position.y = config.baseCamY * yMultiplier;
     //camera.position.z = config.baseCamZ * zMultiplier;
 
-    TweenLite.to(camera.position, 0.35, {
+    TweenLite.to(camera.position, 1, {
+      y: config.baseCamY * yMultiplier,
       z: config.baseCamZ * zMultiplier,
       ease:Power2.easeOut
     });

@@ -15,13 +15,14 @@ canvas{
 
 #bottomBar{
   text-align: center;
-  opacity: 0.3;
+  opacity: 0.1;
   position: absolute;
   background-color: rgba(0,0,0,0.8);
   bottom: 0px;
   width: 100%;
   height: 35px;
-  transition: opacity 2s;
+  transition: opacity 1s;
+  z-index: 15;
 }
 #bottomBar:hover{
   opacity: 1;
