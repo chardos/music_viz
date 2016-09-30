@@ -100,7 +100,6 @@ export default (function(){
 
   function updateFrame() {
     renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-    calcFPS();
 
     //AUDIO ------------------------------------
     let audioData = getAudioData();
@@ -229,6 +228,7 @@ export default (function(){
   return{
     setup,
     teardown,
+    renderer,
     label: 'Wave'
   }
 }())

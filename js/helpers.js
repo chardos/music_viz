@@ -1,43 +1,19 @@
 var V = V || {};
 
 
-V.oneToRand = function(num){
-  return Math.ceil(Math.random()*num);
-}
-
-V.zeroToRand = function(num){
+export function zeroToRand(num){
   return Math.ceil(Math.random()*(num + 1)) - 1;
 }
 
-V.swapForNewArrayItem = function(currItem, arr){
+ export function swapForNewArrayItem(currItem, arr){
   var rand = Math.ceil(Math.random()*(arr.length)) - 1
   arr.push(currItem);
   var newItem = arr.splice(rand, 1);
   return newItem[0];
 }
 
-// there isn't a built in circle particle renderer f
-// so we have to define our own.
-
-function particleRender( context ) {
-  // we get passed a reference to the canvas context
-  context.beginPath();
-  // and we just have to draw our shape at 0,0 - in this
-  // case an arc from 0 to 2Pi radians or 360º - a full circle!
-  context.arc( 0, 0, 1, 0,  Math.PI * 2, true );
-  context.fill();
-};
-
-
-// called when the mouse moves
-function updateMouseCoords( event ) {
-  // store the mouseX and mouseY position
-  mouseX = event.clientX;
-  mouseY = event.clientY;
-}
-
 //calc fps
-function calcFPS(){
+export function calcFPS(){
  if(!lastCalledTime) {
      lastCalledTime = Date.now();
      fps = 0;
@@ -50,6 +26,28 @@ function calcFPS(){
 }
 
 
+// there isn't a built in circle particle renderer f
+// so we have to define our own.
+
+// function particleRender( context ) {
+//   // we get passed a reference to the canvas context
+//   context.beginPath();
+//   // and we just have to draw our shape at 0,0 - in this
+//   // case an arc from 0 to 2Pi radians or 360º - a full circle!
+//   context.arc( 0, 0, 1, 0,  Math.PI * 2, true );
+//   context.fill();
+// };
+
+
+// called when the mouse moves
+function updateMouseCoords( event ) {
+  // store the mouseX and mouseY position
+  mouseX = event.clientX;
+  mouseY = event.clientY;
+}
+
+
+
 function s(){ // stop
   clearInterval(int);
   clearInterval(changeViewInt);
@@ -59,7 +57,21 @@ document.addEventListener("click", function(){
  s();
 });
 
-function requestFullScreen(element) {
+
+export function initFullScreenHandlers(){
+  var elem = document.body; // Make the body go full screen.
+
+  document.getElementById("fullscreen").addEventListener("click", function(){
+    _requestFullScreen(elem);
+  });
+
+  // document.addEventListener("fullscreenchange", _FShandler);
+  // document.addEventListener("webkitfullscreenchange", _FShandler);
+  // document.addEventListener("mozfullscreenchange", _FShandler);
+  // document.addEventListener("MSFullscreenChange", _FShandler);
+}
+
+function _requestFullScreen(element) {
     // Supports most browsers and their versions.
     var requestMethod = element.requestFullScreen || element.webkitRequestFullScreen || element.mozRequestFullScreen || element.msRequestFullscreen;
 
@@ -73,20 +85,12 @@ function requestFullScreen(element) {
     }
 }
 
-var elem = document.body; // Make the body go full screen.
 
-document.getElementById("fullscreen").addEventListener("click", function(){
-  requestFullScreen(elem);
-});
 
-function FShandler(){
+
+function _FShandler(){
   renderer.setSize( window.innerWidth, window.innerHeight );
   setTimeout(function(){
     renderer.setSize( window.innerWidth, window.innerHeight );
   },1500)
 }
-
-document.addEventListener("fullscreenchange", FShandler);
-document.addEventListener("webkitfullscreenchange", FShandler);
-document.addEventListener("mozfullscreenchange", FShandler);
-document.addEventListener("MSFullscreenChange", FShandler);

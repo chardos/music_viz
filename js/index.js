@@ -1,3 +1,4 @@
+import {zeroToRand, swapForNewArrayItem, initFullScreenHandlers} from './helpers.js';
 import starburst from './starburst/main.js';
 import wave from './wave/main.js';
 
@@ -40,12 +41,11 @@ function Stage(viz){
   }
 }
 let init = function() {
-  console.log('In/itTED');
+  initFullScreenHandlers();
   //get random viz, set current and remove it from the array
-  var randNum = V.zeroToRand(vizArray.length - 1)
+  var randNum = zeroToRand(vizArray.length - 1)
   currentViz = vizArray[randNum]
   vizArray.splice(randNum, 1);
-  printVizArray();
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)
@@ -54,7 +54,6 @@ let init = function() {
   setInterval(function(){
     transition();
   },8000)
-
 
 }
 function printVizArray(){
@@ -68,14 +67,15 @@ function printVizArray(){
 let transition = function(){
   stageHolder['stage' + (canvasCount - 1)].getCanvas().style.opacity = 0;
   stageHolder['stage' + (canvasCount - 1)].getCanvas().style.zIndex = 10;
-  console.log('count', canvasCount);
+
   (function(canvasCount){
     setTimeout(function(){
       console.log('count', canvasCount);
       stageHolder['stage' + (canvasCount - 1)].destroy()
     },2500)
   }(canvasCount))
-  currentViz = V.swapForNewArrayItem(currentViz, vizArray)
+
+  currentViz = swapForNewArrayItem(currentViz, vizArray)
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)

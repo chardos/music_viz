@@ -87,15 +87,12 @@ export default (function(){
 
   function updateFrame() {
     renderer.render( scene, camera ); // and render the scene from the perspective of the camera
-    calcFPS();
 
     //AUDIO ------------------------------------
-
     let audioData = getAudioData();
     ({currentVolume, frequencyData} = audioData)
 
     //PARTICLES ------------------------------------
-
     particles.geometry.verticesNeedUpdate = true;
     particles.geometry.colorsNeedUpdate = true;
     var colors = []; //create the array that will house all the colors of each particle
@@ -206,5 +203,10 @@ export default (function(){
     }
   }
 
-  return { setup, teardown, label: 'Starburst' }
+  return {
+    setup,
+    teardown,
+    renderer,
+    label: 'Starburst'
+   }
 }())
