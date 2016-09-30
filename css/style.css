@@ -6,6 +6,12 @@ body {
   font-family: helvetica, arial, sans-serif;
   color: white;
 }
+canvas{
+  position: absolute;
+  top: 0;
+  left:0;
+  transition: all 2s;
+}
 
 #bottomBar{
   text-align: center;

@@ -33,6 +33,9 @@ function Stage(viz){
     },
     getLabel: function(){
       return viz.label
+    },
+    getCanvas: function(){
+      return canvas
     }
   }
 }
@@ -50,21 +53,9 @@ let init = function() {
 
   setInterval(function(){
     transition();
-  },2000)
+  },8000)
 
 
-  // let stage = Stage(wave)
-  // stage.init();
-  //
-  // setInterval(function(){
-  //   stage.destroy();
-  //   setTimeout(function(){
-  //     stage.init();
-  //   },100)
-  // },2000)
-
-  // let stage2 = Stage(wave)
-  // stage2.init();
 }
 function printVizArray(){
   var str = ''
@@ -75,21 +66,16 @@ function printVizArray(){
 }
 
 let transition = function(){
-  //kill current viz
-  stageHolder['stage' + (canvasCount - 1)].destroy()
-
+  stageHolder['stage' + (canvasCount - 1)].getCanvas().style.opacity = 0;
+  stageHolder['stage' + (canvasCount - 1)].getCanvas().style.zIndex = 10;
+  console.log('count', canvasCount);
+  (function(canvasCount){
+    setTimeout(function(){
+      console.log('count', canvasCount);
+      stageHolder['stage' + (canvasCount - 1)].destroy()
+    },2500)
+  }(canvasCount))
   currentViz = V.swapForNewArrayItem(currentViz, vizArray)
-
-  //get random viz, set current
-  // var randNum = V.zeroToRand(vizArray.length - 1)
-  // let lastViz = currentViz
-  //
-  // //push old current, slice out new current
-  // vizArray.splice(randNum, 1);
-  // vizArray.push(lastViz)
-  // console.log('pushed', lastViz.label);
-  // currentViz = vizArray[randNum]
-  printVizArray()
 
   //init stage
   stageHolder['stage' + canvasCount] = Stage(currentViz)
