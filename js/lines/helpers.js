@@ -5,7 +5,10 @@ export function Line(){
   var y = Math.ceil(Math.random() * innerHeight)
   this.lineWidth = random(1,6);
   this.direction = getRandomDirection( random(0,3) );
-  this.color = 'hsl(0,100%,50%)'
+  let hue = random(1,360)
+  let saturation = random(60,100)
+  let lightness = random(15,50)
+  this.color = `hsl(${hue},${saturation}%,${lightness}%)`
   // var direction = getRandomDirection( random(0,3) );
   this.secondsTilChange = random(1,4) * 60;
   this.lastPosition = null;

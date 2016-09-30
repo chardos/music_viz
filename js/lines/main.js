@@ -24,9 +24,13 @@ export default (function(){
   }
 
   function updateFrame() {
+
+    let audioData = getAudioData();
+    let volume = audioData.currentVolume;
+
     lines.forEach(function(line){
   		if(line.lastPosition){
-  			line.draw(line.lastPosition, line.currentPosition, line.lineWidth, ctx);
+  			line.draw(line.lastPosition, line.currentPosition, volume/8, ctx);
   		}
   		//set new positions
   		line.lastPosition = deepExtend({}, line.currentPosition); //deep copy current pos

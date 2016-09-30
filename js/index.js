@@ -11,7 +11,7 @@ let mainConfig = {
   fftSize: 512
 }
 
-let vizArray = [/*starburst, wave,*/ lines],
+let vizArray = [starburst, wave, lines],
     currentViz,
     canvasCount = 0
 
@@ -25,13 +25,11 @@ function Stage(viz){
   return{
     init: function(){
       canvas.id = `canvas${canvasCount}`
-      console.log('id',canvas.id);
       viz.setup(canvas, mainConfig)
       canvasCount++;
     },
     destroy: function(){
       viz.teardown()
-      // canvas.parentNode.removeChild(canvas)
       document.querySelector('canvas').remove()
     },
     getLabel: function(){
