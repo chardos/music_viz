@@ -1,6 +1,7 @@
 import {zeroToRand, swapForNewArrayItem, initFullScreenHandlers} from './helpers.js';
 import starburst from './starburst/main.js';
 import wave from './wave/main.js';
+import lines from './lines/main.js';
 
 //mainConfig
 
@@ -9,7 +10,7 @@ let mainConfig = {
   fftSize: 512
 }
 
-let vizArray = [starburst, wave],
+let vizArray = [starburst, wave, lines],
     currentViz,
     canvasCount = 0
 
@@ -53,7 +54,7 @@ let init = function() {
 
   setInterval(function(){
     transition();
-  },8000)
+  },10000)
 
 }
 function printVizArray(){
