@@ -1,33 +1,32 @@
+let view1 = {
+  cam:[-700, 0, 500],
+  camLookAt:[-700,0,500]
+}
+let view2 = {
+  cam:[-600, -400, 700],
+  camLookAt:[-600,-100,0]
+}
+let view3 = {
+  cam:[-2000, 0, 400],
+  camLookAt:[0,0,-1500]
+}
+
 export const views = [
-  viewOne,
-  viewTwo
+  view1,
+  view2,
+  view3
 ];
 
-export function viewOne(camera, config){
-  let x = -700
-  let y = 0
-  let z = 500
-
+export function viewRunner(view, camera, config){
+  let cam = view.cam
+  let camLookAt = view.camLookAt
   //modify camera position
-  _updateBaseCamPosition(config, x,y,z)
-  _updateCameraPosition(camera, x,y,z)
-  camera.lookAt(new THREE.Vector3(x,0,z));
+  _updateBaseCamPosition(config, cam[0], cam[1], cam[2])
+  _updateCameraPosition(camera, cam[0], cam[1], cam[2])
+  camera.lookAt(new THREE.Vector3(camLookAt[0], camLookAt[1], camLookAt[2]));
 
   //turn on/off effects
 }
-export function viewTwo(camera, config){
-  let x = -600
-  let y = -400
-  let z = 700
-
-  //modify camera position
-  _updateBaseCamPosition(config, x,y,z)
-  _updateCameraPosition(camera, x,y,z)
-  camera.lookAt(new THREE.Vector3(x,-100,0));
-
-  //turn on/off effects
-}
-
 
 function _updateBaseCamPosition(config, x, y, z){
   config.baseCamX = x;

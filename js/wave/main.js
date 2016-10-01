@@ -1,5 +1,5 @@
 import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
-import {views} from './waveViews.js';
+import {views, viewRunner} from './waveViews.js';
 import {setup3dScene} from '../helpers/3d.js';
 import {random} from '../helpers.js';
 
@@ -89,6 +89,10 @@ export default (function(){
     particles = new THREE.PointCloud(particleGeom, material);
     scene.add( particles );
 
+    //remove this
+    // viewRunner(views[0], camera, config)
+    setInterval(changeView, 1500)
+
     requestAnimationFrame(updateFrame);
 
   }
@@ -109,12 +113,6 @@ export default (function(){
     ({currentVolume, frequencyData} = audioData)
 
     //BIG BEAT DETECTION------------------------
-    var volumeDelta = currentVolume - vars.lastVolume;
-    if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
-      if(vars.cooledOff == true){
-        changeView();
-      }
-    }
     vars.lastVolume = currentVolume;
 
     //PARTICLES ------------------------------------
@@ -129,7 +127,7 @@ export default (function(){
 
     stylizeColumn(currentColumn);
     shiftParticlesLeft(config, vars);
-    // stutterCamPosition(config, vars);
+    // stutterCamX(config, vars);
 
     vars.baseHue += 0.0003;
     if(vars.baseHue > 1){
@@ -137,7 +135,7 @@ export default (function(){
     };
 
     // camera.lookAt(new THREE.Vector3(-500,0,0));
-    camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
+    // camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
     if(playing){
       requestAnimationFrame(updateFrame);
@@ -198,15 +196,14 @@ export default (function(){
 
 
 
-  function stutterCamPosition(config, vars){
+  function stutterCamX(config, vars){
     camera.position.x = config.baseCamX + currentVolume * 4;
     // camera.position.y = config.baseCamY + currentVolume* 3;
   }
 
   function changeView(){
-    // var rand = random(0, views.length - 1)
-    // views[rand](camera, config)
-    views[0](camera, config)
+    var rand = random(0, views.length - 1)
+    viewRunner(views[rand], camera, config)
   }
 
   return{
