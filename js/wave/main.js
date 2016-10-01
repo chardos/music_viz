@@ -1,3 +1,4 @@
+import effects from './waveEffects.js';
 import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
 import {views, viewRunner} from './waveViews.js';
 import {setup3dScene} from '../helpers/3d.js';
@@ -13,7 +14,9 @@ let particles,
     material,
     colors,
     columnNum,
+    currentEffect,
     playing;
+
 export default (function(){
   let config = {
     particleBaseSize: 3,
@@ -33,7 +36,6 @@ export default (function(){
     lastVolume: 500, //random large number
     cooledOff: true,
   }
-  let effects = []
 
   function setup(canvas, mainConfig) {
     columnNum = 0;
@@ -42,6 +44,7 @@ export default (function(){
     ({camera, scene} = threeD)
     window.p = camera.position;
     window.c = camera;
+    window.config = config;
     renderer = new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
@@ -88,13 +91,13 @@ export default (function(){
 
     particles = new THREE.PointCloud(particleGeom, material);
     scene.add( particles );
+    console.log(particles);
 
-    //remove this
-    // viewRunner(views[0], camera, config)
-    setInterval(changeView, 1500)
+    changeView();
+    setInterval(changeView, 1800)
+    setInterval(changeView, 4200)
 
     requestAnimationFrame(updateFrame);
-
   }
 
   function teardown() {
@@ -106,6 +109,7 @@ export default (function(){
   }
 
   function updateFrame() {
+    // console.log(currentVolume);
     renderer.render( scene, camera ); // and render the scene from the perspective of the camera
 
     //AUDIO ------------------------------------
@@ -127,7 +131,9 @@ export default (function(){
 
     stylizeColumn(currentColumn);
     shiftParticlesLeft(config, vars);
-    // stutterCamX(config, vars);
+    if(currentEffect){
+      currentEffect(config, camera, particles, currentVolume)
+    }
 
     vars.baseHue += 0.0003;
     if(vars.baseHue > 1){
@@ -165,7 +171,6 @@ export default (function(){
       if(particle.x < config.width * config.spacing * -1){
         particle.x = 0 - config.spacing;
       }
-      //particle.z = particle.baseZ + vars.currentVolume;
     }
   }
 
@@ -202,8 +207,23 @@ export default (function(){
   }
 
   function changeView(){
-    var rand = random(0, views.length - 1)
+    getNewView()
+    getNewEffect()
+  }
+  function getNewView(){
+    let rand = random(0, views.length - 1)
     viewRunner(views[rand], camera, config)
+  }
+  function getNewEffect(){
+    // currentEffect = effects[1]
+    let rand = random(0, 1)
+    if(rand){
+      currentEffect = false
+    }
+    else{
+      let rand = random(0, effects.length - 1)
+      currentEffect = effects[rand]
+    }
   }
 
   return{
