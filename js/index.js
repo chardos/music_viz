@@ -7,11 +7,11 @@ import lines from './lines/main.js';
 
 let mainConfig = {
   fps: 60,
-  vizDuration: 12,
+  vizDuration: 1200,
   fftSize: 512
 }
 
-let vizArray = [starburst, wave, lines],
+let vizArray = [/*starburst, lines,*/ wave],
     currentViz,
     canvasCount = 0
 

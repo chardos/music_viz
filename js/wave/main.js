@@ -1,5 +1,7 @@
 import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
+import {views} from './waveViews.js';
 import {setup3dScene} from '../helpers/3d.js';
+import {random} from '../helpers.js';
 
 let particles,
     particleGeom,
@@ -12,7 +14,6 @@ let particles,
     colors,
     columnNum,
     playing;
-
 export default (function(){
   let config = {
     particleBaseSize: 3,
@@ -29,16 +30,18 @@ export default (function(){
   let vars = {
     heightToFFTratio: null,
     baseHue: Math.random(),
-    currentVolume: null,
     lastVolume: 500, //random large number
     cooledOff: true,
   }
+  let effects = []
 
   function setup(canvas, mainConfig) {
     columnNum = 0;
     playing = true;
     let threeD = setup3dScene(canvas);
     ({camera, scene} = threeD)
+    window.p = camera.position;
+    window.c = camera;
     renderer = new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
@@ -132,6 +135,8 @@ export default (function(){
     if(vars.baseHue > 1){
       vars.baseHue = 0
     };
+
+    // camera.lookAt(new THREE.Vector3(-500,0,0));
     camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
     if(playing){
@@ -175,7 +180,7 @@ export default (function(){
       //assign each particle to a FFT band
       var fftBand = i%(analyser.fftSize/vars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
-      // var amplitude = amplitude*amplitude / 200;
+      // amplitude = (amplitude * amplitude * amplitude) / 90000
 
       particle.z = amplitude;
       particle.baseZ = amplitude;
@@ -194,35 +199,14 @@ export default (function(){
 
 
   function stutterCamPosition(config, vars){
-    // camera.position.x = config.baseCamX + vars.currentVolume* 2;
-    camera.position.y = config.baseCamY + currentVolume* 3;
+    camera.position.x = config.baseCamX + currentVolume * 4;
+    // camera.position.y = config.baseCamY + currentVolume* 3;
   }
 
   function changeView(){
-
-    var yMultiplier = Math.random() + 0.5;
-    var zMultiplier = Math.random()* 0.7 + 0.5;
-
-    //camera.position.y = config.baseCamY * yMultiplier;
-    //camera.position.z = config.baseCamZ * zMultiplier;
-
-    TweenLite.to(camera.position, 1, {
-      y: config.baseCamY * yMultiplier,
-      z: config.baseCamZ * zMultiplier,
-      ease:Power2.easeOut
-    });
-
-
-    //set cool off
-    vars.cooledOff = false;
-    setTimeout(function(){
-      vars.cooledOff = true;
-    },config.coolOffPeriod)
-
-    vars.cooledOffSmall = false;
-    setTimeout(function(){
-      vars.cooledOffSmall = true;
-    },config.coolOffPeriodSmall)
+    // var rand = random(0, views.length - 1)
+    // views[rand](camera, config)
+    views[0](camera, config)
   }
 
   return{
