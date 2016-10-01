@@ -10,11 +10,25 @@ let view3 = {
   cam:[-2000, 0, 400],
   camLookAt:[0,0,-1500]
 }
-
+let view4 = {
+  cam:[-450, 200, 900],
+  camLookAt:[-900,-200,-100]
+}
+let view5 = {
+  cam:[-400, -400, 400],
+  camLookAt:[-400,-100,0]
+}
+let view6 = {
+  cam:[-400, -400, 900],
+  camLookAt:[-400,-100,0]
+}
 export const views = [
   view1,
   view2,
-  view3
+  view3,
+  view4,
+  view5,
+  view6
 ];
 
 export function viewRunner(view, camera, config){

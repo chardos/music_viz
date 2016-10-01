@@ -15,6 +15,7 @@ let particles,
     colors,
     columnNum,
     currentEffect,
+    changeViewInt,
     playing;
 
 export default (function(){
@@ -74,9 +75,9 @@ export default (function(){
         particleGeom.vertices[index].baseZ = z;
 
         // vertex colors
-        colors[index] = new THREE.Color(1,1,1);
+        colors[index] = new THREE.Color();
         var hue = Math.random();
-        colors[index].setHSL( hue, 1.0, 0 );
+        colors[index].setHSL( hue, 1.0, 0 ); //Set lightness to darken particles
         particleGeom.vertices[index].hue = hue;
       }
     }
@@ -90,12 +91,12 @@ export default (function(){
     });
 
     particles = new THREE.PointCloud(particleGeom, material);
+    console.log(particles);
     scene.add( particles );
     console.log(particles);
 
     changeView();
-    setInterval(changeView, 1800)
-    setInterval(changeView, 4200)
+    changeViewInt = setInterval(changeView, 2000)
 
     requestAnimationFrame(updateFrame);
   }
@@ -106,10 +107,10 @@ export default (function(){
     material.dispose();
     scene.remove(particles);
     columnNum = 0;
+    clearInterval(changeViewInt);
   }
 
   function updateFrame() {
-    // console.log(currentVolume);
     renderer.render( scene, camera ); // and render the scene from the perspective of the camera
 
     //AUDIO ------------------------------------
@@ -183,6 +184,7 @@ export default (function(){
       //assign each particle to a FFT band
       var fftBand = i%(analyser.fftSize/vars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
+      var lightness = amplitude/255
       // amplitude = (amplitude * amplitude * amplitude) / 90000
 
       particle.z = amplitude;
@@ -191,31 +193,21 @@ export default (function(){
       //colorize the particle
       colors[index] = new THREE.Color();
       var modifiedHue = vars.baseHue + (frequencyData[fftBand]/600)
-      colors[index].setHSL( modifiedHue, 1, amplitude/255 );
+      colors[index].setHSL( modifiedHue, 1, lightness );
 
     }
-    // particles.geometry.colors = colors; //TANZ
-
-  }
-
-
-
-
-  function stutterCamX(config, vars){
-    camera.position.x = config.baseCamX + currentVolume * 4;
-    // camera.position.y = config.baseCamY + currentVolume* 3;
   }
 
   function changeView(){
-    getNewView()
-    getNewEffect()
+    loadNewView()
+    loadNewEffect()
   }
-  function getNewView(){
+  function loadNewView(){
     let rand = random(0, views.length - 1)
     viewRunner(views[rand], camera, config)
   }
-  function getNewEffect(){
-    // currentEffect = effects[1]
+  function loadNewEffect(){
+    // currentEffect = effects[3]
     let rand = random(0, 1)
     if(rand){
       currentEffect = false
@@ -233,3 +225,5 @@ export default (function(){
     label: 'Wave'
   }
 }())
+
+//inspiration from: https://3bits.net/
