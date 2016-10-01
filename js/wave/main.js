@@ -1,5 +1,8 @@
+import effects from './waveEffects.js';
 import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
+import {views, viewRunner} from './waveViews.js';
 import {setup3dScene} from '../helpers/3d.js';
+import {random} from '../helpers.js';
 
 let particles,
     particleGeom,
@@ -11,6 +14,8 @@ let particles,
     material,
     colors,
     columnNum,
+    currentEffect,
+    changeViewInt,
     playing;
 
 export default (function(){
@@ -29,7 +34,6 @@ export default (function(){
   let vars = {
     heightToFFTratio: null,
     baseHue: Math.random(),
-    currentVolume: null,
     lastVolume: 500, //random large number
     cooledOff: true,
   }
@@ -39,6 +43,9 @@ export default (function(){
     playing = true;
     let threeD = setup3dScene(canvas);
     ({camera, scene} = threeD)
+    window.p = camera.position;
+    window.c = camera;
+    window.config = config;
     renderer = new THREE.WebGLRenderer({canvas: canvas}) //dont create multiple renderers
     renderer.setSize( window.innerWidth, window.innerHeight )
     document.body.appendChild( renderer.domElement )
@@ -68,9 +75,9 @@ export default (function(){
         particleGeom.vertices[index].baseZ = z;
 
         // vertex colors
-        colors[index] = new THREE.Color(1,1,1);
+        colors[index] = new THREE.Color();
         var hue = Math.random();
-        colors[index].setHSL( hue, 1.0, 0 );
+        colors[index].setHSL( hue, 1.0, 0 ); //Set lightness to darken particles
         particleGeom.vertices[index].hue = hue;
       }
     }
@@ -84,10 +91,14 @@ export default (function(){
     });
 
     particles = new THREE.PointCloud(particleGeom, material);
+    console.log(particles);
     scene.add( particles );
+    console.log(particles);
+
+    changeView();
+    changeViewInt = setInterval(changeView, 2000)
 
     requestAnimationFrame(updateFrame);
-
   }
 
   function teardown() {
@@ -96,6 +107,7 @@ export default (function(){
     material.dispose();
     scene.remove(particles);
     columnNum = 0;
+    clearInterval(changeViewInt);
   }
 
   function updateFrame() {
@@ -106,12 +118,6 @@ export default (function(){
     ({currentVolume, frequencyData} = audioData)
 
     //BIG BEAT DETECTION------------------------
-    var volumeDelta = currentVolume - vars.lastVolume;
-    if(volumeDelta > config.bigBeatSensitivity * audioElement.volume){ //detect change in volume
-      if(vars.cooledOff == true){
-        changeView();
-      }
-    }
     vars.lastVolume = currentVolume;
 
     //PARTICLES ------------------------------------
@@ -126,13 +132,17 @@ export default (function(){
 
     stylizeColumn(currentColumn);
     shiftParticlesLeft(config, vars);
-    // stutterCamPosition(config, vars);
+    if(currentEffect){
+      currentEffect(config, camera, particles, currentVolume)
+    }
 
     vars.baseHue += 0.0003;
     if(vars.baseHue > 1){
       vars.baseHue = 0
     };
-    camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
+
+    // camera.lookAt(new THREE.Vector3(-500,0,0));
+    // camera.lookAt(new THREE.Vector3(camera.position.x,-100,0));
 
     if(playing){
       requestAnimationFrame(updateFrame);
@@ -162,7 +172,6 @@ export default (function(){
       if(particle.x < config.width * config.spacing * -1){
         particle.x = 0 - config.spacing;
       }
-      //particle.z = particle.baseZ + vars.currentVolume;
     }
   }
 
@@ -175,7 +184,8 @@ export default (function(){
       //assign each particle to a FFT band
       var fftBand = i%(analyser.fftSize/vars.heightToFFTratio)
       var amplitude = frequencyData[fftBand];
-      // var amplitude = amplitude*amplitude / 200;
+      var lightness = amplitude/255
+      // amplitude = (amplitude * amplitude * amplitude) / 90000
 
       particle.z = amplitude;
       particle.baseZ = amplitude;
@@ -183,46 +193,29 @@ export default (function(){
       //colorize the particle
       colors[index] = new THREE.Color();
       var modifiedHue = vars.baseHue + (frequencyData[fftBand]/600)
-      colors[index].setHSL( modifiedHue, 1, amplitude/255 );
+      colors[index].setHSL( modifiedHue, 1, lightness );
 
     }
-    // particles.geometry.colors = colors; //TANZ
-
-  }
-
-
-
-
-  function stutterCamPosition(config, vars){
-    // camera.position.x = config.baseCamX + vars.currentVolume* 2;
-    camera.position.y = config.baseCamY + currentVolume* 3;
   }
 
   function changeView(){
-
-    var yMultiplier = Math.random() + 0.5;
-    var zMultiplier = Math.random()* 0.7 + 0.5;
-
-    //camera.position.y = config.baseCamY * yMultiplier;
-    //camera.position.z = config.baseCamZ * zMultiplier;
-
-    TweenLite.to(camera.position, 1, {
-      y: config.baseCamY * yMultiplier,
-      z: config.baseCamZ * zMultiplier,
-      ease:Power2.easeOut
-    });
-
-
-    //set cool off
-    vars.cooledOff = false;
-    setTimeout(function(){
-      vars.cooledOff = true;
-    },config.coolOffPeriod)
-
-    vars.cooledOffSmall = false;
-    setTimeout(function(){
-      vars.cooledOffSmall = true;
-    },config.coolOffPeriodSmall)
+    loadNewView()
+    loadNewEffect()
+  }
+  function loadNewView(){
+    let rand = random(0, views.length - 1)
+    viewRunner(views[rand], camera, config)
+  }
+  function loadNewEffect(){
+    // currentEffect = effects[3]
+    let rand = random(0, 1)
+    if(rand){
+      currentEffect = false
+    }
+    else{
+      let rand = random(0, effects.length - 1)
+      currentEffect = effects[rand]
+    }
   }
 
   return{
@@ -232,3 +225,5 @@ export default (function(){
     label: 'Wave'
   }
 }())
+
+//inspiration from: https://3bits.net/

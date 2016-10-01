@@ -50,7 +50,7 @@ export default (function(){
   		// line.lineWidth += .02;
   	})
 
-    baseHue += .15;
+    baseHue += .08;
 
     if(playing){
       requestAnimationFrame(updateFrame);
