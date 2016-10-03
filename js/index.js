@@ -7,13 +7,13 @@ import lines from './lines/main.js';
 
 let mainConfig = {
   fps: 60,
-  vizDuration: 30,
+  vizDuration: 3000,
   fftSize: 512
 }
 
 let currentViz,
-    vizArray = [starburst, lines, wave],
-    // vizArray = [wave],
+    // vizArray = [starburst, lines, wave],
+    vizArray = [lines],
     canvasCount = 0
 
 window.stageHolder = {};
