@@ -1,17 +1,17 @@
 import {random} from '../helpers.js';
 
-export function move(pos, direction){
+export function move(pos, direction, speed){
   if(direction == 'up'){
-    return { x: pos.x, y: pos.y - 1};
+    return { x: pos.x, y: pos.y - speed};
   }
   else if(direction == 'right'){
-    return { x: pos.x + 1, y: pos.y };
+    return { x: pos.x + speed, y: pos.y };
   }
   else if( direction == 'down' ){
-    return { x: pos.x, y: pos.y + 1 };
+    return { x: pos.x, y: pos.y + speed };
   }
   else if( direction == 'left' ){
-    return { x: pos.x - 1, y: pos.y };
+    return { x: pos.x - speed, y: pos.y };
   }
 }
 

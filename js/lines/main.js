@@ -2,6 +2,10 @@ import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
 import {move, wrapAround, turnLeftOrRight, getColor, getRandomDirection} from './lineHelpers.js';
 import {deepExtend, random} from '../helpers.js';
 
+let config = {
+  numLines: 360
+}
+
 let lines = [],
     ctx,
     playing,
@@ -18,7 +22,7 @@ export default (function(){
     ctx = canvas.getContext('2d');
 
     lines = []
-    for(var i = 0; i<150; i++){
+    for(var i = 0; i<config.numLines; i++){
     	lines.push( new Line() );
     }
 
@@ -29,16 +33,17 @@ export default (function(){
 
     let audioData = getAudioData();
     let volume = audioData.currentVolume;
+    let frequencyData = audioData.frequencyData;
 
-    lines.forEach(function(line){
+    lines.forEach(function(line, index){
   		if(line.lastPosition){
-        let lineWidth = (volume / 20 )+ 1
+        let lineWidth = (frequencyData[index] / 30 ) + 1
         let strokestyle = getColor(baseHue + line.variance, line.saturation, line.lightness, volume/45 + 0.3)
   			line.draw(line.lastPosition, line.currentPosition, lineWidth, strokestyle, ctx);
   		}
   		//set new positions
   		line.lastPosition = deepExtend({}, line.currentPosition); //deep copy current pos
-  		line.currentPosition = move(line.currentPosition, line.direction);
+  		line.currentPosition = move(line.currentPosition, line.direction, frequencyData[index] * frequencyData[index] / 10000);
   		//wrap positions if necessary
   		[line.currentPosition, line.lastPosition] = wrapAround(line.currentPosition, line.lastPosition)
 
@@ -50,7 +55,7 @@ export default (function(){
   		// line.lineWidth += .02;
   	})
 
-    baseHue += .08;
+    baseHue += .02;
 
     if(playing){
       requestAnimationFrame(updateFrame);
@@ -66,9 +71,14 @@ export default (function(){
     let y = Math.ceil(Math.random() * innerHeight)
     this.variance = random(-30,30)
     this.saturation = random(60,100)
-    this.lightness = random(15,50)
+    if(random(0,2) === 0){
+      this.lightness = random(15,50)
+    }
+    else{
+      this.lightness = 0;
+    }
 
-    this.lineWidth = random(1,6);
+    this.lineWidth = 1;
     this.direction = getRandomDirection( random(0,3) );
     this.color = getColor(baseHue + this.variance, this.saturation, this.lightness)
     this.secondsTilChange = random(1,4) * 60;
