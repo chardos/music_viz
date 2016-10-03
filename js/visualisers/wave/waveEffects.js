@@ -1,4 +1,4 @@
-import {random} from '../helpers.js';
+import {random} from '../../helpers.js';
 
 function stutterCamX(config, camera, particles, currentVolume){
   camera.position.x = config.baseCamX + currentVolume * 3;

@@ -1,8 +1,8 @@
 import effects from './waveEffects.js';
-import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
+import {analyser, audioElement, getAudioData} from '../../helpers/audio.js';
 import {views, viewRunner} from './waveViews.js';
-import {setup3dScene} from '../helpers/3d.js';
-import {random} from '../helpers.js';
+import {setup3dScene} from '../../helpers/3d.js';
+import {random} from '../../helpers.js';
 
 let particles,
     particleGeom,

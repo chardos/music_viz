@@ -1,19 +1,19 @@
 import {zeroToRand, swapForNewArrayItem, initFullScreenHandlers} from './helpers.js';
-import starburst from './starburst/main.js';
-import wave from './wave/main.js';
-import lines from './lines/main.js';
+import starburst from './visualisers/starburst/main.js';
+import wave from './visualisers/wave/main.js';
+import lines from './visualisers/lines/main.js';
 
 //mainConfig
 
 let mainConfig = {
   fps: 60,
-  vizDuration: 3000,
+  vizDuration: 20,
   fftSize: 512
 }
 
 let currentViz,
-    // vizArray = [starburst, lines, wave],
-    vizArray = [lines],
+    vizArray = [starburst, lines, wave],
+    // vizArray = [lines],
     canvasCount = 0
 
 window.stageHolder = {};

@@ -1,6 +1,6 @@
-import {analyser, audioElement, getAudioData} from '../helpers/audio.js';
+import {analyser, audioElement, getAudioData} from '../../helpers/audio.js';
 import {move, wrapAround, turnLeftOrRight, getColor, getRandomDirection} from './lineHelpers.js';
-import {deepExtend, random} from '../helpers.js';
+import {deepExtend, random} from '../../helpers.js';
 
 let config = {
   numLines: 360

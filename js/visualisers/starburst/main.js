@@ -1,6 +1,6 @@
 import {spherize} from './helpers.js';
-import {analyser, getAudioData} from '../helpers/audio.js';
-import {setup3dScene} from '../helpers/3d.js';
+import {analyser, getAudioData} from '../../helpers/audio.js';
+import {setup3dScene} from '../../helpers/3d.js';
 
 export default (function(){
   let particles,

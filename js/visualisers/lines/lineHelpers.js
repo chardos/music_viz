@@ -1,4 +1,4 @@
-import {random} from '../helpers.js';
+import {random} from '../../helpers.js';
 
 export function move(pos, direction, speed){
   if(direction == 'up'){
