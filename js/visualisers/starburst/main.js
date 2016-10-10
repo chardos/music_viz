@@ -110,9 +110,16 @@ export default (function(){
       //make particles with 0 amplitude bounce to averagevolume
       if (amplitude == 0) amplitude = currentVolume;
 
-      particle.x = particle.origX * amplitude * vars.sphereRange + particle.origX*vars.sphereFloor;
-      particle.y = particle.origY * amplitude * vars.sphereRange + particle.origY*vars.sphereFloor;
-      particle.z = particle.origZ * amplitude * vars.sphereRange + particle.origZ*vars.sphereFloor;
+      //spherefloor easing
+      var sphereFloorEase = 1;
+      if(currentVolume < 20) sphereFloorEase = currentVolume / 100;
+
+      particle.x = particle.origX * amplitude * vars.sphereRange +
+                   particle.origX * vars.sphereFloor * sphereFloorEase;
+      particle.y = particle.origY * amplitude * vars.sphereRange +
+                   particle.origY * vars.sphereFloor * sphereFloorEase;
+      particle.z = particle.origZ * amplitude * vars.sphereRange +
+                   particle.origZ * vars.sphereFloor * sphereFloorEase;
 
 
       //colorize the particle
