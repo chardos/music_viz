@@ -7,7 +7,7 @@ import lines from './visualisers/lines/main.js';
 
 let mainConfig = {
   fps: 60,
-  vizDuration: 20,
+  vizDuration: 9,
   fftSize: 512
 }
 
