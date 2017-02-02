@@ -1,3 +1,3 @@
 # Music visualiser
 
-[View the visualiser](chardos.github.io/music_viz)
+[View the visualiser](http://chardos.github.io/music_viz)
